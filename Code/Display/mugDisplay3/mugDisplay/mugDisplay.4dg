@@ -1,0 +1,298 @@
+#platform "GOLDELOX-GFX2"
+
+#inherit "4DGL_16bitColours.fnc"
+#inherit "mugDisplayUtils.fnc"
+#inherit "mugDisplayCommunication.fnc"
+#inherit "mugDisplayDisplay.fnc"
+//==========================================================================
+
+#constant DISPLAY_SPLASH_SCREEN     := FALSE
+#constant BAUD_AUTOBAUD             := 0
+#constant SERIAL_BAUDRATE           BAUD_19200
+
+#constant ANIMATION_TIMEOUT         := 100
+#constant TXT_SCROLL_TIMEOUT        := 350
+#constant SPLASH_SCREEN_DELAY       := 150
+#constant ICON_WIDTH                := 20
+#constant ICON_HEIGHT               := 18
+
+#constant ANIMATION_TIMER           TIMER1
+#constant INIT_ANIMATION_TIMER      $ *ANIMATION_TIMER := ANIMATION_TIMEOUT
+#constant RESET_ANIMATION_TIMER     $ INIT_ANIMATION_TIMER
+#constant ANIMATION_TIMER_TIMEOUT   $ !(*ANIMATION_TIMER)
+
+#constant TXT_SCROLL_TIMER           TIMER2
+#constant INIT_TXT_SCROLL_TIMER      $ *TXT_SCROLL_TIMER := TXT_SCROLL_TIMEOUT
+#constant RESET_TXT_SCROLL_TIMER     $ INIT_TXT_SCROLL_TIMER
+#constant TXT_SCROLL_TIMER_TIMEOUT   $ !(*TXT_SCROLL_TIMER)
+
+#CONST
+    power_icon_sector        $ 0x0000, 0x0000
+    signal_icon_sector       $ 0x0000, 0x0009
+    transmission_icon_sector $ 0x0000, 0x0011
+    darth_vader_sector_x_y   $ 0x0000, 0x0021, 0, 0 /* splash screen */
+#END
+
+var _transmissionIconDisplayedState := 0;
+var _transmissionIconFrame := 0;
+
+var _powerIconDisplayedState    := 0;
+var _powerIconLevel             := 0;
+
+#CONST
+    power_icon_charge_idx    := 0,
+    power_icon_warn_idx,
+    power_icon_1_idx,
+    power_icon_2_idx,
+    power_icon_3_idx,
+    power_icon_full_idx,
+    power_icon_max_idx
+#END
+
+var _signalIconDisplayedState    := 0;
+var _signalIconLevel             := 0;
+
+#CONST
+    signal_icon_no_signal_idx   :=0,
+    signal_icon_1_idx,
+    signal_icon_2_idx,
+    signal_icon_3_idx,
+    signal_icon_warn_idx,
+    signal_icon_max_idx
+#END
+
+#CONST
+    ICON_POWER          := 1,
+    ICON_SIGNAL         := 2,
+    ICON_TRANSMISSION   := 3
+#END
+
+#constant NUM_COMMANDS := 11
+var tokenParsers[]  := [0,
+                        show_token_parser,
+                        set_power_level_parser,
+                        set_signal_level_parser,
+                        0,
+                        0,
+                        display_selected_message_parser,
+                        write_selected_message_parser,
+                        write_message_parser,
+                        set_contrast_parser,
+                        clear_msg_area,
+                        display_name];
+
+
+
+func checkArgCount(var count)
+    if (hasChars() == count)
+        return TRUE;
+    endif
+    return FALSE;
+endfunc
+
+func showIcon(var icon, var show)
+    if (icon == ICON_POWER)
+        if (show)
+            _powerIconDisplayedState := TRUE;
+            displayIconAtPosition(power_icon_sector, power_icon_properties[X], power_icon_properties[Y], _powerIconLevel);
+        else
+            _powerIconDisplayedState := FALSE;
+            clearArea(@power_icon_properties);
+        endif
+    else if (icon == ICON_SIGNAL)
+        if (show)
+            _signalIconDisplayedState := TRUE;
+            displayIconAtPosition(signal_icon_sector, signal_icon_properties[X], signal_icon_properties[Y], _signalIconLevel);
+        else
+            _signalIconDisplayedState := FALSE;
+            clearArea(@signal_icon_properties);
+        endif
+    else if (icon == ICON_TRANSMISSION)
+        if (show)
+            _transmissionIconFrame := 0;
+            _transmissionIconDisplayedState := TRUE;
+        else
+            _transmissionIconDisplayedState := FALSE;
+            clearArea(@transmission_icon_properties);
+        endif
+    else
+        setError("Unknown icon");
+        return FALSE;
+    endif
+
+    return TRUE;
+endfunc
+
+func set_signal_level_parser()
+    var level;
+
+    if (!checkArgCount(1))
+        setError("Wrong arg count");
+        return FALSE;
+    endif
+
+    level := getNextChar();
+
+    if (level < 0 || level >= signal_icon_max_idx)
+        setError("Invalid parameter");
+        return FALSE;
+    endif
+
+    _signalIconLevel := level;
+    return showIcon(ICON_SIGNAL, _signalIconDisplayedState);
+endfunc
+
+func set_power_level_parser()
+    var level;
+
+    if (!checkArgCount(1))
+        setError("Wrong arg count");
+        return FALSE;
+    endif
+
+    level := getNextChar();
+
+    if (level < 0 || level >= power_icon_max_idx)
+        setError("Invalid parameter");
+        return FALSE;
+    endif
+
+    _powerIconLevel := level;
+    return showIcon(ICON_POWER, _powerIconDisplayedState);
+endfunc
+
+func show_token_parser()
+    var icon;
+    var show;
+
+    if (!checkArgCount(2))
+        setError("Wrong arg count");
+        return FALSE;
+    endif
+
+    icon := getNextChar();
+    show := getNextChar();
+
+    return showIcon(icon, show);
+endfunc
+
+func display_selected_message_parser()
+    display_selection_text_copy(getStringPtr(), 0);
+    return TRUE;
+endfunc
+
+func write_selected_message_parser()
+     write_selected_message();
+     return TRUE;
+endfunc
+
+func write_message_parser()
+    write_message(getStringPtr());
+    return TRUE;
+endfunc
+
+func set_contrast_parser()
+    var level;
+
+    if (!checkArgCount(1))
+        setError("Wrong arg count");
+        return FALSE;
+    endif
+
+    level := getNextChar();
+
+    if (level < 0 || level > 16)
+        setError("Invalid parameter");
+        return FALSE;
+    endif
+
+    gfx_Contrast(level);
+    return TRUE;
+endfunc
+
+func clear_msg_area()
+     clear_message_area();
+     return TRUE;
+endfunc
+
+func display_name()
+    write_name(getStringPtr());
+    return TRUE;
+endfunc
+
+func parseSerialBuffer()
+    var cmd;
+    var cntr;
+    var retval;
+
+    cntr := 0;
+
+    if (!hasNextChar())
+        setError("No command");
+        return FALSE;
+    endif
+
+    cmd := getNextChar();
+    if (cmd == 0 || cmd > NUM_COMMANDS)
+        setError("Unknown command");
+        return FALSE;
+    endif
+
+    retval := tokenParsers[cmd]();
+    return retval;
+endfunc
+
+func waitForMedia()
+    gfx_Cls();
+    while (media_Init() == 0)                           // initialise and test the uSD card
+        txt_FGcolour(RED);
+        print("Insert uSD card");
+        pause(2000);
+        gfx_Cls();
+    wend
+endfunc
+
+func main()
+    waitForMedia();
+    initScreenLayout();
+    initCommunication(SERIAL_BAUDRATE);
+    INIT_ANIMATION_TIMER;
+    INIT_TXT_SCROLL_TIMER;
+
+   // pause(500);
+
+    repeat
+        if (com_Error())
+            resetSerialBuffer();
+            sendNAck("COM_ERROR");
+        endif
+
+        if (com_Full())
+            if (verifySerialBufferContents())
+                if(parseSerialBuffer())
+                    sendAck();
+                else
+                    sendNAck(getError());
+                endif
+            else
+                sendNAck(getError());
+            endif
+            resetSerialBuffer();
+        endif
+
+        if (ANIMATION_TIMER_TIMEOUT)
+            if (_transmissionIconDisplayedState)
+                media_SetSector(transmission_icon_sector);
+                media_VideoFrame(transmission_icon_properties[X],transmission_icon_properties[Y], _transmissionIconFrame++);
+                _transmissionIconFrame := _transmissionIconFrame % 11;
+            endif
+            RESET_ANIMATION_TIMER;
+        endif
+
+        if (TXT_SCROLL_TIMER_TIMEOUT)
+            scroll_text_in_selection_area();
+            RESET_TXT_SCROLL_TIMER;
+        endif
+    forever
+endfunc
+

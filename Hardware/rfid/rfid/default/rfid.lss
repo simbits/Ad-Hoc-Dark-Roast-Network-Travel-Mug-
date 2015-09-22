@@ -1,0 +1,547 @@
+
+rfid.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000174  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .debug_aranges 00000020  00000000  00000000  000001c8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  2 .debug_pubnames 0000005d  00000000  00000000  000001e8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  3 .debug_info   000003b5  00000000  00000000  00000245  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_abbrev 00000118  00000000  00000000  000005fa  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_line   00000361  00000000  00000000  00000712  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_frame  00000070  00000000  00000000  00000a74  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_str    000000bf  00000000  00000000  00000ae4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_loc    00000018  00000000  00000000  00000ba3  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	17 c0       	rjmp	.+46     	; 0x32 <__bad_interrupt>
+   4:	16 c0       	rjmp	.+44     	; 0x32 <__bad_interrupt>
+   6:	15 c0       	rjmp	.+42     	; 0x32 <__bad_interrupt>
+   8:	14 c0       	rjmp	.+40     	; 0x32 <__bad_interrupt>
+   a:	13 c0       	rjmp	.+38     	; 0x32 <__bad_interrupt>
+   c:	12 c0       	rjmp	.+36     	; 0x32 <__bad_interrupt>
+   e:	11 c0       	rjmp	.+34     	; 0x32 <__bad_interrupt>
+  10:	10 c0       	rjmp	.+32     	; 0x32 <__bad_interrupt>
+  12:	0f c0       	rjmp	.+30     	; 0x32 <__bad_interrupt>
+  14:	0e c0       	rjmp	.+28     	; 0x32 <__bad_interrupt>
+  16:	48 c0       	rjmp	.+144    	; 0xa8 <__vector_11>
+  18:	0c c0       	rjmp	.+24     	; 0x32 <__bad_interrupt>
+  1a:	0b c0       	rjmp	.+22     	; 0x32 <__bad_interrupt>
+  1c:	0a c0       	rjmp	.+20     	; 0x32 <__bad_interrupt>
+  1e:	09 c0       	rjmp	.+18     	; 0x32 <__bad_interrupt>
+  20:	08 c0       	rjmp	.+16     	; 0x32 <__bad_interrupt>
+  22:	07 c0       	rjmp	.+14     	; 0x32 <__bad_interrupt>
+  24:	06 c0       	rjmp	.+12     	; 0x32 <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf ed       	ldi	r28, 0xDF	; 223
+  2c:	cd bf       	out	0x3d, r28	; 61
+  2e:	1e d0       	rcall	.+60     	; 0x6c <main>
+  30:	9f c0       	rjmp	.+318    	; 0x170 <_exit>
+
+00000032 <__bad_interrupt>:
+  32:	e6 cf       	rjmp	.-52     	; 0x0 <__vectors>
+
+00000034 <init>:
+/********************************************************************************/
+
+
+void init (void) // set all registers
+{
+  DDRB   = 0x03;   // port b(0,1) outputs [Led 1&2], b(2..7) inputs [PINB2 = SWITCH]
+  34:	83 e0       	ldi	r24, 0x03	; 3
+  36:	87 bb       	out	0x17, r24	; 23
+  PORTB  = 0x00;
+  38:	18 ba       	out	0x18, r1	; 24
+  
+  DDRD   = 0x00;   // port d inputs
+  3a:	11 ba       	out	0x11, r1	; 17
+  PORTD  = 0x00;   //          
+  3c:	12 ba       	out	0x12, r1	; 18
+
+
+  GIMSK  = 0x20;   // Pin chande interrupt enabled
+  3e:	80 e2       	ldi	r24, 0x20	; 32
+  40:	8b bf       	out	0x3b, r24	; 59
+  PCMSK  = 0x04;   // pin change interrupt mask, selecting pin b2
+  42:	84 e0       	ldi	r24, 0x04	; 4
+  44:	80 bd       	out	0x20, r24	; 32
+ 
+   
+  MCUCR  = 0x00;   // no sleep or standby modes 
+  46:	15 be       	out	0x35, r1	; 53
+  SREG   = 0x80;   // global interrupt enable
+  48:	80 e8       	ldi	r24, 0x80	; 128
+  4a:	8f bf       	out	0x3f, r24	; 63
+}
+  4c:	08 95       	ret
+
+0000004e <USART_Init>:
+
+
+void USART_Init( unsigned int baud )
+{
+/* Set baud rate */
+	UBRRH = (unsigned char)(baud>>8);
+  4e:	92 b9       	out	0x02, r25	; 2
+	UBRRL = (unsigned char)baud;
+  50:	89 b9       	out	0x09, r24	; 9
+/* Enable receiver and transmitter */
+	UCSRB = (1<<RXEN)|(1<<TXEN);
+  52:	88 e1       	ldi	r24, 0x18	; 24
+  54:	8a b9       	out	0x0a, r24	; 10
+/* Set frame format: 8data, 2stop bit */
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+  56:	8e e0       	ldi	r24, 0x0E	; 14
+  58:	83 b9       	out	0x03, r24	; 3
+}
+  5a:	08 95       	ret
+
+0000005c <put_char>:
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+  5c:	5d 9b       	sbis	0x0b, 5	; 11
+  5e:	fe cf       	rjmp	.-4      	; 0x5c <put_char>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+  60:	8c b9       	out	0x0c, r24	; 12
+}
+  62:	08 95       	ret
+
+00000064 <get_char>:
+
+char get_char(void)
+{
+	while(!(UCSRA & (1<<RXC)));			// Wait for recieve buffer 
+  64:	5f 9b       	sbis	0x0b, 7	; 11
+  66:	fe cf       	rjmp	.-4      	; 0x64 <get_char>
+	
+	return UDR;							// Return data from Data Register 
+  68:	8c b1       	in	r24, 0x0c	; 12
+}
+  6a:	08 95       	ret
+
+0000006c <main>:
+/********************************************************************************/
+
+
+void init (void) // set all registers
+{
+  DDRB   = 0x03;   // port b(0,1) outputs [Led 1&2], b(2..7) inputs [PINB2 = SWITCH]
+  6c:	83 e0       	ldi	r24, 0x03	; 3
+  6e:	87 bb       	out	0x17, r24	; 23
+  PORTB  = 0x00;
+  70:	18 ba       	out	0x18, r1	; 24
+  
+  DDRD   = 0x00;   // port d inputs
+  72:	11 ba       	out	0x11, r1	; 17
+  PORTD  = 0x00;   //          
+  74:	12 ba       	out	0x12, r1	; 18
+
+
+  GIMSK  = 0x20;   // Pin chande interrupt enabled
+  76:	80 e2       	ldi	r24, 0x20	; 32
+  78:	8b bf       	out	0x3b, r24	; 59
+  PCMSK  = 0x04;   // pin change interrupt mask, selecting pin b2
+  7a:	84 e0       	ldi	r24, 0x04	; 4
+  7c:	80 bd       	out	0x20, r24	; 32
+ 
+   
+  MCUCR  = 0x00;   // no sleep or standby modes 
+  7e:	15 be       	out	0x35, r1	; 53
+  SREG   = 0x80;   // global interrupt enable
+  80:	80 e8       	ldi	r24, 0x80	; 128
+  82:	8f bf       	out	0x3f, r24	; 63
+
+
+void USART_Init( unsigned int baud )
+{
+/* Set baud rate */
+	UBRRH = (unsigned char)(baud>>8);
+  84:	12 b8       	out	0x02, r1	; 2
+	UBRRL = (unsigned char)baud;
+  86:	8c e0       	ldi	r24, 0x0C	; 12
+  88:	89 b9       	out	0x09, r24	; 9
+/* Enable receiver and transmitter */
+	UCSRB = (1<<RXEN)|(1<<TXEN);
+  8a:	88 e1       	ldi	r24, 0x18	; 24
+  8c:	8a b9       	out	0x0a, r24	; 10
+/* Set frame format: 8data, 2stop bit */
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+  8e:	8e e0       	ldi	r24, 0x0E	; 14
+  90:	83 b9       	out	0x03, r24	; 3
+
+ char data;
+ init();
+ USART_Init(12);
+
+ sei();
+  92:	78 94       	sei
+
+
+
+ PORTB |= (1<<1);	// led 2 off 
+  94:	c1 9a       	sbi	0x18, 1	; 24
+	UDR = byte;							// Put data into buffer, sends the data 
+}
+
+char get_char(void)
+{
+	while(!(UCSRA & (1<<RXC)));			// Wait for recieve buffer 
+  96:	5f 9b       	sbis	0x0b, 7	; 11
+  98:	fe cf       	rjmp	.-4      	; 0x96 <main+0x2a>
+	
+	return UDR;							// Return data from Data Register 
+  9a:	8c b1       	in	r24, 0x0c	; 12
+
+ while(1)
+ {
+	// blink leds when receiving data from tags
+	data = get_char();
+	PORTB &= ~(1<<0); 	// led 1 on
+  9c:	c0 98       	cbi	0x18, 0	; 24
+	UDR = byte;							// Put data into buffer, sends the data 
+}
+
+char get_char(void)
+{
+	while(!(UCSRA & (1<<RXC)));			// Wait for recieve buffer 
+  9e:	5f 9b       	sbis	0x0b, 7	; 11
+  a0:	fe cf       	rjmp	.-4      	; 0x9e <main+0x32>
+	
+	return UDR;							// Return data from Data Register 
+  a2:	8c b1       	in	r24, 0x0c	; 12
+ {
+	// blink leds when receiving data from tags
+	data = get_char();
+	PORTB &= ~(1<<0); 	// led 1 on
+	data = get_char();
+	PORTB |= (1<<0);	//led 1 off
+  a4:	c0 9a       	sbi	0x18, 0	; 24
+  a6:	f7 cf       	rjmp	.-18     	; 0x96 <main+0x2a>
+
+000000a8 <__vector_11>:
+/*    ISR    */
+/********************************************************************************/
+
+
+ISR (PCINT_vect)//pin change on pin b2
+{
+  a8:	1f 92       	push	r1
+  aa:	0f 92       	push	r0
+  ac:	0f b6       	in	r0, 0x3f	; 63
+  ae:	0f 92       	push	r0
+  b0:	11 24       	eor	r1, r1
+  b2:	8f 93       	push	r24
+	cli(); 
+  b4:	f8 94       	cli
+
+   if (!(PINB & 4))
+  b6:	b2 99       	sbic	0x16, 2	; 22
+  b8:	29 c0       	rjmp	.+82     	; 0x10c <__stack+0x2d>
+   {
+		PORTB &= ~(1<<1); //led 1 on
+  ba:	c1 98       	cbi	0x18, 1	; 24
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+  bc:	5d 9b       	sbis	0x0b, 5	; 11
+  be:	fe cf       	rjmp	.-4      	; 0xbc <__vector_11+0x14>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+  c0:	82 e0       	ldi	r24, 0x02	; 2
+  c2:	8c b9       	out	0x0c, r24	; 12
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+  c4:	5d 9b       	sbis	0x0b, 5	; 11
+  c6:	fe cf       	rjmp	.-4      	; 0xc4 <__vector_11+0x1c>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+  c8:	1c b8       	out	0x0c, r1	; 12
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+  ca:	5d 9b       	sbis	0x0b, 5	; 11
+  cc:	fe cf       	rjmp	.-4      	; 0xca <__vector_11+0x22>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+  ce:	88 e0       	ldi	r24, 0x08	; 8
+  d0:	8c b9       	out	0x0c, r24	; 12
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+  d2:	5d 9b       	sbis	0x0b, 5	; 11
+  d4:	fe cf       	rjmp	.-4      	; 0xd2 <__vector_11+0x2a>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+  d6:	1c b8       	out	0x0c, r1	; 12
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+  d8:	5d 9b       	sbis	0x0b, 5	; 11
+  da:	fe cf       	rjmp	.-4      	; 0xd8 <__vector_11+0x30>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+  dc:	81 e2       	ldi	r24, 0x21	; 33
+  de:	8c b9       	out	0x0c, r24	; 12
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+  e0:	5d 9b       	sbis	0x0b, 5	; 11
+  e2:	fe cf       	rjmp	.-4      	; 0xe0 <__stack+0x1>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+  e4:	81 e0       	ldi	r24, 0x01	; 1
+  e6:	8c b9       	out	0x0c, r24	; 12
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+  e8:	5d 9b       	sbis	0x0b, 5	; 11
+  ea:	fe cf       	rjmp	.-4      	; 0xe8 <__stack+0x9>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+  ec:	81 e0       	ldi	r24, 0x01	; 1
+  ee:	8c b9       	out	0x0c, r24	; 12
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+  f0:	5d 9b       	sbis	0x0b, 5	; 11
+  f2:	fe cf       	rjmp	.-4      	; 0xf0 <__stack+0x11>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+  f4:	1c b8       	out	0x0c, r1	; 12
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+  f6:	5d 9b       	sbis	0x0b, 5	; 11
+  f8:	fe cf       	rjmp	.-4      	; 0xf6 <__stack+0x17>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+  fa:	1c b8       	out	0x0c, r1	; 12
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+  fc:	5d 9b       	sbis	0x0b, 5	; 11
+  fe:	fe cf       	rjmp	.-4      	; 0xfc <__stack+0x1d>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+ 100:	83 ef       	ldi	r24, 0xF3	; 243
+ 102:	8c b9       	out	0x0c, r24	; 12
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+ 104:	5d 9b       	sbis	0x0b, 5	; 11
+ 106:	fe cf       	rjmp	.-4      	; 0x104 <__stack+0x25>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+ 108:	8e e5       	ldi	r24, 0x5E	; 94
+ 10a:	8c b9       	out	0x0c, r24	; 12
+ 		put_char(0x00);
+ 		put_char(0xF3);
+ 		put_char(0x5E);
+   }
+   
+   if (PINB & 4)
+ 10c:	b2 9b       	sbis	0x16, 2	; 22
+ 10e:	29 c0       	rjmp	.+82     	; 0x162 <__stack+0x83>
+   {
+		 PORTB |= (1<<1);//led 1 off
+ 110:	c1 9a       	sbi	0x18, 1	; 24
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+ 112:	5d 9b       	sbis	0x0b, 5	; 11
+ 114:	fe cf       	rjmp	.-4      	; 0x112 <__stack+0x33>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+ 116:	82 e0       	ldi	r24, 0x02	; 2
+ 118:	8c b9       	out	0x0c, r24	; 12
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+ 11a:	5d 9b       	sbis	0x0b, 5	; 11
+ 11c:	fe cf       	rjmp	.-4      	; 0x11a <__stack+0x3b>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+ 11e:	1c b8       	out	0x0c, r1	; 12
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+ 120:	5d 9b       	sbis	0x0b, 5	; 11
+ 122:	fe cf       	rjmp	.-4      	; 0x120 <__stack+0x41>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+ 124:	88 e0       	ldi	r24, 0x08	; 8
+ 126:	8c b9       	out	0x0c, r24	; 12
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+ 128:	5d 9b       	sbis	0x0b, 5	; 11
+ 12a:	fe cf       	rjmp	.-4      	; 0x128 <__stack+0x49>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+ 12c:	1c b8       	out	0x0c, r1	; 12
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+ 12e:	5d 9b       	sbis	0x0b, 5	; 11
+ 130:	fe cf       	rjmp	.-4      	; 0x12e <__stack+0x4f>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+ 132:	80 e2       	ldi	r24, 0x20	; 32
+ 134:	8c b9       	out	0x0c, r24	; 12
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+ 136:	5d 9b       	sbis	0x0b, 5	; 11
+ 138:	fe cf       	rjmp	.-4      	; 0x136 <__stack+0x57>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+ 13a:	81 e0       	ldi	r24, 0x01	; 1
+ 13c:	8c b9       	out	0x0c, r24	; 12
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+ 13e:	5d 9b       	sbis	0x0b, 5	; 11
+ 140:	fe cf       	rjmp	.-4      	; 0x13e <__stack+0x5f>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+ 142:	81 e0       	ldi	r24, 0x01	; 1
+ 144:	8c b9       	out	0x0c, r24	; 12
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+ 146:	5d 9b       	sbis	0x0b, 5	; 11
+ 148:	fe cf       	rjmp	.-4      	; 0x146 <__stack+0x67>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+ 14a:	1c b8       	out	0x0c, r1	; 12
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+ 14c:	5d 9b       	sbis	0x0b, 5	; 11
+ 14e:	fe cf       	rjmp	.-4      	; 0x14c <__stack+0x6d>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+ 150:	1c b8       	out	0x0c, r1	; 12
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+ 152:	5d 9b       	sbis	0x0b, 5	; 11
+ 154:	fe cf       	rjmp	.-4      	; 0x152 <__stack+0x73>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+ 156:	88 ef       	ldi	r24, 0xF8	; 248
+ 158:	8c b9       	out	0x0c, r24	; 12
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void put_char(char byte)
+{
+	while ( !( UCSRA & (1<<UDRE)) );	// Wait for empty transmit buffer 
+ 15a:	5d 9b       	sbis	0x0b, 5	; 11
+ 15c:	fe cf       	rjmp	.-4      	; 0x15a <__stack+0x7b>
+
+	UDR = byte;							// Put data into buffer, sends the data 
+ 15e:	8a e1       	ldi	r24, 0x1A	; 26
+ 160:	8c b9       	out	0x0c, r24	; 12
+ 		put_char(0x00);
+ 		put_char(0xF8);
+ 		put_char(0x1A);
+   }
+
+	sei();
+ 162:	78 94       	sei
+}
+ 164:	8f 91       	pop	r24
+ 166:	0f 90       	pop	r0
+ 168:	0f be       	out	0x3f, r0	; 63
+ 16a:	0f 90       	pop	r0
+ 16c:	1f 90       	pop	r1
+ 16e:	18 95       	reti
+
+00000170 <_exit>:
+ 170:	f8 94       	cli
+
+00000172 <__stop_program>:
+ 172:	ff cf       	rjmp	.-2      	; 0x172 <__stop_program>

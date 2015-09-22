@@ -1,0 +1,9 @@
+build
+latest_build
+.dep
+*.o
+._*
+.DS_Store
+.*.swp
+*.s#*
+*.b#*

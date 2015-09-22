@@ -1,0 +1,27 @@
+// Movie - "power_icons" Size 20x18
+// Width  = 20
+// Height = 18
+// Frames = 6
+// Usage: power_icons(x, y);
+#constant power_icons    $media_SetSector(0x0000, 0x0000); media_Video
+
+// Movie - "signal_icons" Size 20x18
+// Width  = 20
+// Height = 18
+// Frames = 5
+// Usage: signal_icons(x, y);
+#constant signal_icons    $media_SetSector(0x0000, 0x0009); media_Video
+
+// Movie - "transmission_icons.gif" Size 20x18
+// Width  = 20
+// Height = 18
+// Frames = 11
+// Usage: transmission_icons.gif(x, y);
+#constant transmission_icons.gif    $media_SetSector(0x0000, 0x0011); media_Video
+
+// Image - "darthVaderMug.jpg" Size 128x128
+// Width  = 128
+// Height = 128
+// Usage: darthVaderMug.jpg(x, y);
+#constant darthVaderMug.jpg    $media_SetSector(0x0000, 0x0021); media_Image
+

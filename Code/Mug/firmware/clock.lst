@@ -1,0 +1,164 @@
+   1               		.file	"clock.c"
+   2               	__SREG__ = 0x3f
+   3               	__SP_H__ = 0x3e
+   4               	__SP_L__ = 0x3d
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.global __do_copy_data
+   8               		.global __do_clear_bss
+  16               	.Ltext0:
+  17               		.section	.text.__vector_16,"ax",@progbits
+  18               	.global	__vector_16
+  20               	__vector_16:
+  21               	.LFB5:
+  22               	.LSM0:
+  23 0000 1F92      		push __zero_reg__
+  24 0002 0F92      		push r0
+  25 0004 0FB6      		in r0,__SREG__
+  26 0006 0F92      		push r0
+  27 0008 1124      		clr __zero_reg__
+  28 000a 8F93      		push r24
+  29 000c 9F93      		push r25
+  30 000e AF93      		push r26
+  31 0010 BF93      		push r27
+  32               	/* prologue: Signal */
+  33               	/* frame size = 0 */
+  34               	/* stack size = 7 */
+  35               	.L__stack_usage = 7
+  36               	.LSM1:
+  37 0012 8091 0000 		lds r24,ticks
+  38 0016 9091 0000 		lds r25,ticks+1
+  39 001a A091 0000 		lds r26,ticks+2
+  40 001e B091 0000 		lds r27,ticks+3
+  41 0022 0196      		adiw r24,1
+  42 0024 A11D      		adc r26,__zero_reg__
+  43 0026 B11D      		adc r27,__zero_reg__
+  44 0028 8093 0000 		sts ticks,r24
+  45 002c 9093 0000 		sts ticks+1,r25
+  46 0030 A093 0000 		sts ticks+2,r26
+  47 0034 B093 0000 		sts ticks+3,r27
+  48               	/* epilogue start */
+  49               	.LSM2:
+  50 0038 BF91      		pop r27
+  51 003a AF91      		pop r26
+  52 003c 9F91      		pop r25
+  53 003e 8F91      		pop r24
+  54 0040 0F90      		pop r0
+  55 0042 0FBE      		out __SREG__,r0
+  56 0044 0F90      		pop r0
+  57 0046 1F90      		pop __zero_reg__
+  58 0048 1895      		reti
+  59               	.LFE5:
+  61               		.section	.text.__vector_18,"ax",@progbits
+  62               	.global	__vector_18
+  64               	__vector_18:
+  65               	.LFB6:
+  66               	.LSM3:
+  67               	/* prologue: naked */
+  68               	/* frame size = 0 */
+  69               	/* stack size = 0 */
+  70               	.L__stack_usage = 0
+  71               	.LSM4:
+  72               	/* #APP */
+  73               	 ;  18 "firmware/clock.c" 1
+  74 0000 1895      		reti
+  75               	 ;  0 "" 2
+  76               	/* epilogue start */
+  77               	/* #NOAPP */
+  78               	.LFE6:
+  80               		.section	.text.systemInitClock,"ax",@progbits
+  81               	.global	systemInitClock
+  83               	systemInitClock:
+  84               	.LFB8:
+  85               	.LSM5:
+  86               	/* prologue: function */
+  87               	/* frame size = 0 */
+  88               	/* stack size = 0 */
+  89               	.L__stack_usage = 0
+  90               	.LSM6:
+  91 0000 1092 0000 		sts ticks,__zero_reg__
+  92 0004 1092 0000 		sts ticks+1,__zero_reg__
+  93 0008 1092 0000 		sts ticks+2,__zero_reg__
+  94 000c 1092 0000 		sts ticks+3,__zero_reg__
+  95               	.LBB9:
+  96               	.LBB10:
+  97               	.LSM7:
+  98 0010 82E0      		ldi r24,lo8(2)
+  99 0012 84BD      		out 68-0x20,r24
+ 100               	.LSM8:
+ 101 0014 93E0      		ldi r25,lo8(3)
+ 102 0016 95BD      		out 69-0x20,r25
+ 103               	.LSM9:
+ 104 0018 9FE7      		ldi r25,lo8(127)
+ 105 001a 97BD      		out 71-0x20,r25
+ 106               	.LSM10:
+ 107 001c 8093 6E00 		sts 110,r24
+ 108               	/* epilogue start */
+ 109               	.LBE10:
+ 110               	.LBE9:
+ 111               	.LSM11:
+ 112 0020 0895      		ret
+ 113               	.LFE8:
+ 115               		.section	.text.systemGetElapsedTime,"ax",@progbits
+ 116               	.global	systemGetElapsedTime
+ 118               	systemGetElapsedTime:
+ 119               	.LFB9:
+ 120               	.LSM12:
+ 121               	/* prologue: function */
+ 122               	/* frame size = 0 */
+ 123               	/* stack size = 0 */
+ 124               	.L__stack_usage = 0
+ 125               	.LBB11:
+ 126               	.LSM13:
+ 127 0000 8FB7      		in r24,__SREG__
+ 128               	.LVL0:
+ 129               	.LBB12:
+ 130               	.LBB13:
+ 131               	.LSM14:
+ 132               	/* #APP */
+ 133               	 ;  50 "/opt/local/lib/gcc/avr/4.5.2/../../../../avr/include/util/atomic.h" 1
+ 134 0002 F894      		cli
+ 135               	 ;  0 "" 2
+ 136               	.LVL1:
+ 137               	/* #NOAPP */
+ 138               	.LBE13:
+ 139               	.LBE12:
+ 140               	.LSM15:
+ 141 0004 2091 0000 		lds r18,ticks
+ 142 0008 3091 0000 		lds r19,ticks+1
+ 143 000c 4091 0000 		lds r20,ticks+2
+ 144 0010 5091 0000 		lds r21,ticks+3
+ 145               	.LVL2:
+ 146               	.LBB14:
+ 147               	.LBB15:
+ 148               	.LSM16:
+ 149 0014 8FBF      		out __SREG__,r24
+ 150               	.LSM17:
+ 151               	.LBE15:
+ 152               	.LBE14:
+ 153               	.LBE11:
+ 154               	.LSM18:
+ 155 0016 B901      		movw r22,r18
+ 156 0018 CA01      		movw r24,r20
+ 157               	.LVL3:
+ 158               	/* epilogue start */
+ 159 001a 0895      		ret
+ 160               	.LFE9:
+ 162               		.lcomm ticks,4
+ 211               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 clock.c
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccfMF1ZS.s:2      *ABS*:000000000000003f __SREG__
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccfMF1ZS.s:3      *ABS*:000000000000003e __SP_H__
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccfMF1ZS.s:4      *ABS*:000000000000003d __SP_L__
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccfMF1ZS.s:5      *ABS*:0000000000000000 __tmp_reg__
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccfMF1ZS.s:6      *ABS*:0000000000000001 __zero_reg__
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccfMF1ZS.s:20     .text.__vector_16:0000000000000000 __vector_16
+                             .bss:0000000000000000 ticks
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccfMF1ZS.s:64     .text.__vector_18:0000000000000000 __vector_18
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccfMF1ZS.s:83     .text.systemInitClock:0000000000000000 systemInitClock
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccfMF1ZS.s:118    .text.systemGetElapsedTime:0000000000000000 systemGetElapsedTime
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss

@@ -1,0 +1,17 @@
+--- gcc/config/avr/avr.c.orig	2011-01-23 22:31:18.000000000 +0100
++++ gcc/config/avr/avr.c	2011-01-23 22:32:12.000000000 +0100
+@@ -206,12 +206,8 @@
+       break;
+ 
+   if (!t->name)
+-    {
+-      fprintf (stderr, "unknown MCU '%s' specified\nKnown MCU names:\n",
+-	       avr_mcu_name);
+-      for (t = avr_mcu_types; t->name; t++)
+-	fprintf (stderr,"   %s\n", t->name);
+-    }
++    error ("Unknown MCU %qs specified.  See --target-help for "
++	   "known MCU names.", avr_mcu_name);
+ 
+   avr_current_device = t;
+   avr_current_arch = &avr_arch_types[avr_current_device->arch];

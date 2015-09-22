@@ -1,0 +1,28 @@
+// Movie - "power_icons_bicubic.gif" Size 20x18
+// Width  = 20
+// Height = 18
+// Frames = 6
+// Usage: power_icons_bicubic.gif(x, y);
+#constant power_icons_bicubic.gif    $media_SetSector(0x0000, 0x0000); media_Video
+
+// Movie - "power_icons_sharp.gif" Size 20x18
+// Width  = 20
+// Height = 18
+// Frames = 6
+// Usage: power_icons_sharp.gif(x, y);
+#constant power_icons_sharp.gif    $media_SetSector(0x0000, 0x0009); media_Video
+
+// Movie - "transmission_icons_bicubic.gif" Size 20x18
+// Width  = 20
+// Height = 18
+// Frames = 11
+// Usage: transmission_icons_bicubic.gif(x, y);
+#constant transmission_icons_bicubic.gif    $media_SetSector(0x0000, 0x0012); media_Video
+
+// Movie - "transmission_icons_sharp.gif" Size 20x18
+// Width  = 20
+// Height = 18
+// Frames = 11
+// Usage: transmission_icons_sharp.gif(x, y);
+#constant transmission_icons_sharp.gif    $media_SetSector(0x0000, 0x0022); media_Video
+

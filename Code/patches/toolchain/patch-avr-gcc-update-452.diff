@@ -1,0 +1,65 @@
+--- Portfile.orig	2011-01-21 22:59:51.000000000 +0100
++++ Portfile	2011-01-23 22:57:42.000000000 +0100
+@@ -2,7 +2,7 @@
+ 
+ PortSystem			1.0
+ name            	avr-gcc
+-version         	4.0.2
++version         	4.5.2
+ 
+ # Parameters for this port.
+ set crossgcc-target avr
+@@ -15,11 +15,11 @@
+ categories      	cross devel
+ maintainers     	gmail.com:metamagix
+ master_sites		gnu:gcc/gcc-${version}/
+-distfiles			gcc-${version}.tar.bz2
+-worksrcdir			gcc-${version}
+-checksums			md5 a659b8388cac9db2b13e056e574ceeb0 \
+-					sha1 f1b714c6398393d8f7f4ad5be933b462a95b075d \
+-					rmd160 70c7e21820da4d29ce6e8e48329d906ee19333aa
++distfiles		gcc-${version}.tar.bz2
++worksrcdir		gcc-${version}
++checksums		md5 d6559145853fbaaa0fd7556ed93bce9a \
++			sha1 ad5c440526c98fd17a74eab80c031af6b64d9c90 \
++			rmd160 e1e9f590f5cf5f7029f1941328529a22919ee609
+ 
+ # All cross ports violate the mtree layout.
+ destroot.violate_mtree	yes
+@@ -28,11 +28,11 @@
+ dist_subdir			gcc
+ 
+ depends_lib			bin:${crossgcc-target}-ar:${crossgcc-target}-binutils \
+-					bin:${crossgcc-target}-as:${crossgcc-target}-binutils \
+-					bin:${crossgcc-target}-ld:${crossgcc-target}-binutils \
+-					bin:${crossgcc-target}-nm:${crossgcc-target}-binutils \
+-					bin:${crossgcc-target}-ranlib:${crossgcc-target}-binutils
+-depends_build		bin:msgfmt:gettext
++				bin:${crossgcc-target}-as:${crossgcc-target}-binutils \
++				bin:${crossgcc-target}-ld:${crossgcc-target}-binutils \
++				bin:${crossgcc-target}-nm:${crossgcc-target}-binutils \
++				bin:${crossgcc-target}-ranlib:${crossgcc-target}-binutils
++depends_build		bin:msgfmt:gettext port:mpfr port:libmpc
+ 
+ # gcc is .bz2.
+ use_bzip2			yes
+@@ -78,9 +78,7 @@
+ build.args		${environment}
+ destroot.args	${environment}
+ 
+-patchfiles		gcc-config-avr-avr.c.diff \
+-				gcc-config-avr-avr.h.diff \
+-				gcc-config-avr-t-avr.diff
++patchfiles	patch-avr-config-unknown-mcu.diff
+ 
+ platform darwin 9 {
+ 	patchfiles-append	gcc-config-rs6000-host-darwin.c.diff
+@@ -174,8 +172,6 @@
+ 	# gcc/java/gcj.texi
+ 	crossgcc::fixinfo gcc/java/ gcc/java/Make-lang.in gcj texi
+ 
+-	# fastjar/fastjar.texi
+-	crossgcc::fixinfo fastjar/ fastjar/Makefile.in fastjar texi
+ 	
+ 	# gcc/doc/gccinstall.info
+ 	crossgcc::fixinfo gcc/doc/ gcc/Makefile.in gccinstall info

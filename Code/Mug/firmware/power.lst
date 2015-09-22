@@ -1,0 +1,128 @@
+   1               		.file	"power.c"
+   2               	__SREG__ = 0x3f
+   3               	__SP_H__ = 0x3e
+   4               	__SP_L__ = 0x3d
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.global __do_copy_data
+   8               		.global __do_clear_bss
+  16               	.Ltext0:
+  17               		.section	.text.systemInitPower,"ax",@progbits
+  18               	.global	systemInitPower
+  20               	systemInitPower:
+  21               	.LFB4:
+  22               	.LSM0:
+  23               	/* prologue: function */
+  24               	/* frame size = 0 */
+  25               	/* stack size = 0 */
+  26               	.L__stack_usage = 0
+  27               	.LBB6:
+  28               	.LBB7:
+  29               	.LSM1:
+  30 0000 82E0      		ldi r24,lo8(2)
+  31 0002 60E0      		ldi r22,lo8(0)
+  32 0004 0E94 0000 		call GPIOCreate
+  33 0008 9093 0000 		sts __power+1,r25
+  34 000c 8093 0000 		sts __power,r24
+  35               	.LSM2:
+  36 0010 64E0      		ldi r22,lo8(4)
+  37 0012 0E94 0000 		call GPIOSetDirection
+  38               	.LBE7:
+  39               	.LBE6:
+  40               	.LBB8:
+  41               	.LBB9:
+  42               	.LSM3:
+  43 0016 81E0      		ldi r24,lo8(1)
+  44 0018 61E0      		ldi r22,lo8(1)
+  45 001a 0E94 0000 		call GPIOCreate
+  46 001e 9093 0000 		sts __power+2+1,r25
+  47 0022 8093 0000 		sts __power+2,r24
+  48               	.LSM4:
+  49 0026 63E0      		ldi r22,lo8(3)
+  50 0028 0E94 0000 		call GPIOSetDirection
+  51               	/* epilogue start */
+  52               	.LBE9:
+  53               	.LBE8:
+  54               	.LSM5:
+  55 002c 0895      		ret
+  56               	.LFE4:
+  58               		.section	.text.systemMainPower,"ax",@progbits
+  59               	.global	systemMainPower
+  61               	systemMainPower:
+  62               	.LFB5:
+  63               	.LSM6:
+  64               	.LVL0:
+  65               	/* prologue: function */
+  66               	/* frame size = 0 */
+  67               	/* stack size = 0 */
+  68               	.L__stack_usage = 0
+  69 0000 2091 0000 		lds r18,__power
+  70 0004 3091 0000 		lds r19,__power+1
+  71               	.LSM7:
+  72 0008 8530      		cpi r24,lo8(5)
+  73 000a 01F4      		brne .L3
+  74               	.LBB14:
+  75               	.LBB15:
+  76               	.LSM8:
+  77 000c C901      		movw r24,r18
+  78               	.LVL1:
+  79 000e 65E0      		ldi r22,lo8(5)
+  80 0010 00C0      		rjmp .L5
+  81               	.LVL2:
+  82               	.L3:
+  83               	.LBE15:
+  84               	.LBE14:
+  85               	.LBB16:
+  86               	.LBB17:
+  87               	.LSM9:
+  88 0012 C901      		movw r24,r18
+  89               	.LVL3:
+  90 0014 64E0      		ldi r22,lo8(4)
+  91               	.L5:
+  92 0016 0E94 0000 		call GPIOSetDirection
+  93 001a 0895      		ret
+  94               	.LBE17:
+  95               	.LBE16:
+  96               	.LFE5:
+  98               		.section	.text.systemUsbHostConnected,"ax",@progbits
+  99               	.global	systemUsbHostConnected
+ 101               	systemUsbHostConnected:
+ 102               	.LFB6:
+ 103               	.LSM10:
+ 104               	/* prologue: function */
+ 105               	/* frame size = 0 */
+ 106               	/* stack size = 0 */
+ 107               	.L__stack_usage = 0
+ 108               	.LSM11:
+ 109 0000 8091 0000 		lds r24,__power+2
+ 110 0004 9091 0000 		lds r25,__power+2+1
+ 111 0008 0E94 0000 		call GPIOGetPinValue
+ 112 000c 91E0      		ldi r25,lo8(1)
+ 113 000e 8111      		cpse r24,__zero_reg__
+ 114 0010 90E0      		ldi r25,lo8(0)
+ 115               	.L7:
+ 116               	.LSM12:
+ 117 0012 892F      		mov r24,r25
+ 118               	/* epilogue start */
+ 119 0014 0895      		ret
+ 120               	.LFE6:
+ 122               		.lcomm __power,4
+ 163               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 power.c
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccwH81IE.s:2      *ABS*:000000000000003f __SREG__
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccwH81IE.s:3      *ABS*:000000000000003e __SP_H__
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccwH81IE.s:4      *ABS*:000000000000003d __SP_L__
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccwH81IE.s:5      *ABS*:0000000000000000 __tmp_reg__
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccwH81IE.s:6      *ABS*:0000000000000001 __zero_reg__
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccwH81IE.s:20     .text.systemInitPower:0000000000000000 systemInitPower
+                             .bss:0000000000000000 __power
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccwH81IE.s:61     .text.systemMainPower:0000000000000000 systemMainPower
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccwH81IE.s:101    .text.systemUsbHostConnected:0000000000000000 systemUsbHostConnected
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+GPIOCreate
+GPIOSetDirection
+GPIOGetPinValue

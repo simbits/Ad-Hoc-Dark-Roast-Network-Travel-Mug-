@@ -1,0 +1,59 @@
+OLED:
+
+Display_Create()
+Display_Destroy()
+Display_Init()
+Display_SetPowerLevel(level) {level: 0 (excl), 1, 2, 3, 4 (full), 255 (ext. source)}
+Display_ShowPowerLevel()
+Display_HidePowerLevel()
+Display_SetRSSI(level) {level: 0 (cross), 1, 2, 3 (full), 255 (error)}
+Display_ShowRSSI()
+Display_HideRSSI()
+Display_ShowTransmission()
+Display_HideTransmission()
+Display_ClearScreen()
+Display_ClearArea(x, y, w, h);
+Display_PrintMessage(fmt, ...);
+Display_AppendMessage(fmt, ...);
+Display_ShowModal(x, y, w, h, t, fmt, ...)
+Display_HideModal()
+Display_PowerSave(mode)
+Display_Reset()
+
+
+Broadcaster:
+
+BCast_Create()
+BCast_Destroy()
+BCast_Init()
+BCast_SetID(id)
+BCast_Discover()
+BCast_RSSI()
+BCast_SendMessage(fmt, ...)
+BCast_MessagesReceived() (int)
+BCast_GetMessage()
+BCast_PowerSave(mode)
+BCast_Reset()
+
+
+Button:
+
+Button_Create()
+Button_Destroy()
+Button_Init()
+Button_AttachInterrupt()
+Button_RegisterListener(listener)
+Button_RemoveListener(listener)
+
+listener {
+	*func
+	minT
+	type { up, down, state }
+}
+
+Gesture:
+
+Gesture_Create()
+Gesture_Destroy()
+Gesture_Init()
+Gesture_RegisterListener(*func)

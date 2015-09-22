@@ -1,0 +1,5 @@
+"batt_empty" 0000 0000 0 0
+"batt_level_1" 0400 0000 0 0
+"batt_level_2" 0800 0000 0 0
+"batt_level_3" 0C00 0000 0 0
+"batt_full" 1000 0000 0 0

@@ -1,0 +1,104 @@
+All commands are Acknowledged by receiving 'OK' on success or 'ERR n' in case of error
+
+Packages are of the following form (spaces inserted for clarity)
+'$ length msg checksum'
+length: 1-byte msg length + 1 for the checksum
+msg: the message max length 254 bytes
+checksum: 1-byte ~(sum(msg))+1
+
+Communicate baudrate:
+Tx: 'U'
+
+*SetPowerLevel
+-> '0x02 level'
+level: 1-byte level
+0: ext. power source
+1: battery exclamation point icon
+2: 1 stripe
+3: 2 stripes
+4: 3 stripes
+5: full
+
+*ShowPowerLevel
+*HidePowerLevel
+-> '0x01 0x01 [0|1]'
+0: hide
+1: show
+
+*SetRSSI
+-> '0x03 level'
+0: cross icon
+1: 1 stripe
+2: 2 stripes
+3: 3 stripes
+4: exclamation point icon
+
+*ShowRSSI
+*HideRSSI
+-> '0x01 0x02 [0|1]
+0: hide
+1: show
+
+*ShowTransmission
+*HideTransmission
+-> '0x01 0x03 [0|1]
+0: hide
+1: show
+
+*ClearMessagArea
+-> '0x04'
+
+*ClearSelectionArea
+-> '0x05'
+
+*DisplaySelectedMessage
+-> '0x06 message'
+msg: message (max: 64 chars, '\0' terminated)
+
+*WriteSelectedMessage
+-> ' 0x07'
+
+
+*WriteMessage
+-> '0x08 author, message'
+author: author (max: 16 chars, '\0' terminated)
+msg: message (max: 64 chars, '\0' terminated)
+
+*ShowModal
+-> '0x09 t msg'
+t: time (0: forever)
+msg: message to display
+
+*HideModal
+-> '0x09 0'
+
+*PowerSave
+-> '0x0a [0|1]
+0: leave powersave mode
+1: enter powersave mode
+
+*Reset
+-> '0x0b'
+
+*Dim screen
+-> '0x0c level'
+level: 1-16
+
+* Setters
+-> '0x0d'
+--> '0x01': OwnerName
+--> '0x02': DisplayOwnerName
+--> '0x03': OwnerNameColor
+--> '0x04': OwnerNameStyle
+--> '0x05': DisplayAuthorName
+--> '0x06': AuthorNameColor
+--> '0x07': AuthorNameStyle
+--> '0x08': TextSize
+--> '0x0a': TextStyle
+--> '0x0b': SelectionAreaBgColor
+--> '0x0c': SelectionAreaFgColor
+--> '0x0d': MessageAreaBgColor
+--> '0x0e': SelectionAreaFgColor
+--> '0x0f': ModalFgColor
+--> '0x10': ModalBgColor
+

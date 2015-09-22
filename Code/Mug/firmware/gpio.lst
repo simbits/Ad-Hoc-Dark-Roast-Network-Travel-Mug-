@@ -1,0 +1,1249 @@
+   1               		.file	"gpio.c"
+   2               	__SREG__ = 0x3f
+   3               	__SP_H__ = 0x3e
+   4               	__SP_L__ = 0x3d
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.global __do_copy_data
+   8               		.global __do_clear_bss
+  16               	.Ltext0:
+  17               		.section	.text.__get_gpio_int_num,"ax",@progbits
+  19               	__get_gpio_int_num:
+  20               	.LFB2:
+  21               	.LSM0:
+  22               	.LVL0:
+  23               	/* prologue: function */
+  24               	/* frame size = 0 */
+  25               	/* stack size = 0 */
+  26               	.L__stack_usage = 0
+  27 0000 DC01      		movw r26,r24
+  28               	.LSM1:
+  29 0002 0097      		sbiw r24,0
+  30 0004 01F0      		breq .L5
+  31               	.LSM2:
+  32 0006 8C91      		ld r24,X
+  33               	.LVL1:
+  34 0008 E0E0      		ldi r30,lo8(__interruptMap)
+  35 000a F0E0      		ldi r31,hi8(__interruptMap)
+  36 000c 20E0      		ldi r18,lo8(0)
+  37 000e 30E0      		ldi r19,hi8(0)
+  38               	.L4:
+  39 0010 9081      		ld r25,Z
+  40 0012 8917      		cp r24,r25
+  41 0014 01F4      		brne .L3
+  42               	.LSM3:
+  43 0016 1196      		adiw r26,1
+  44 0018 4C91      		ld r20,X
+  45 001a 1197      		sbiw r26,1
+  46 001c 9181      		ldd r25,Z+1
+  47 001e 4917      		cp r20,r25
+  48 0020 01F4      		brne .L3
+  49               	.LSM4:
+  50 0022 F901      		movw r30,r18
+  51 0024 EE0F      		lsl r30
+  52 0026 FF1F      		rol r31
+  53 0028 EE0F      		lsl r30
+  54 002a FF1F      		rol r31
+  55 002c E20F      		add r30,r18
+  56 002e F31F      		adc r31,r19
+  57 0030 E050      		subi r30,lo8(-(__interruptMap))
+  58 0032 F040      		sbci r31,hi8(-(__interruptMap))
+  59 0034 8281      		ldd r24,Z+2
+  60 0036 0895      		ret
+  61               	.L3:
+  62 0038 2F5F      		subi r18,lo8(-(1))
+  63 003a 3F4F      		sbci r19,hi8(-(1))
+  64 003c 3596      		adiw r30,5
+  65               	.LSM5:
+  66 003e 2330      		cpi r18,3
+  67 0040 3105      		cpc r19,__zero_reg__
+  68 0042 01F4      		brne .L4
+  69               	.LSM6:
+  70 0044 8FEF      		ldi r24,lo8(-1)
+  71 0046 0895      		ret
+  72               	.LVL2:
+  73               	.L5:
+  74               	.LSM7:
+  75 0048 8FEF      		ldi r24,lo8(-1)
+  76               	.LSM8:
+  77 004a 0895      		ret
+  78               	.LFE2:
+  80               		.section	.text.__disable_interrupt,"ax",@progbits
+  82               	__disable_interrupt:
+  83               	.LFB5:
+  84               	.LSM9:
+  85               	.LVL3:
+  86               	/* prologue: function */
+  87               	/* frame size = 0 */
+  88               	/* stack size = 0 */
+  89               	.L__stack_usage = 0
+  90               	.LSM10:
+  91 0000 9DB3      		in r25,61-0x20
+  92 0002 21E0      		ldi r18,lo8(1)
+  93 0004 30E0      		ldi r19,hi8(1)
+  94 0006 00C0      		rjmp 2f
+  95 0008 220F      	1:	lsl r18
+  96 000a 331F      		rol r19
+  97 000c 8A95      	2:	dec r24
+  98 000e 02F4      		brpl 1b
+  99 0010 2095      		com r18
+ 100 0012 2923      		and r18,r25
+ 101 0014 2DBB      		out 61-0x20,r18
+ 102               	/* epilogue start */
+ 103               	.LSM11:
+ 104 0016 0895      		ret
+ 105               	.LFE5:
+ 107               		.section	.text.__enable_interrupt,"ax",@progbits
+ 109               	__enable_interrupt:
+ 110               	.LFB6:
+ 111               	.LSM12:
+ 112               	.LVL4:
+ 113               	/* prologue: function */
+ 114               	/* frame size = 0 */
+ 115               	/* stack size = 0 */
+ 116               	.L__stack_usage = 0
+ 117               	.LBB32:
+ 118               	.LBB33:
+ 119               	.LSM13:
+ 120 0000 9DB3      		in r25,61-0x20
+ 121 0002 21E0      		ldi r18,lo8(1)
+ 122 0004 30E0      		ldi r19,hi8(1)
+ 123 0006 00C0      		rjmp 2f
+ 124 0008 220F      	1:	lsl r18
+ 125 000a 331F      		rol r19
+ 126 000c 8A95      	2:	dec r24
+ 127 000e 02F4      		brpl 1b
+ 128 0010 9223      		and r25,r18
+ 129               	.LBE33:
+ 130               	.LBE32:
+ 131               	.LSM14:
+ 132 0012 01F4      		brne .L8
+ 133               	.LVL5:
+ 134               	.LBB34:
+ 135               	.LBB35:
+ 136               	.LSM15:
+ 137 0014 8CB3      		in r24,60-0x20
+ 138               	.LVL6:
+ 139 0016 822B      		or r24,r18
+ 140 0018 8CBB      		out 60-0x20,r24
+ 141               	.LBE35:
+ 142               	.LBE34:
+ 143               	.LSM16:
+ 144 001a 8DB3      		in r24,61-0x20
+ 145 001c 822B      		or r24,r18
+ 146 001e 8DBB      		out 61-0x20,r24
+ 147               	.L8:
+ 148 0020 0895      		ret
+ 149               	.LFE6:
+ 151               		.section	.text.__set_interrupt_sense_control,"ax",@progbits
+ 153               	__set_interrupt_sense_control:
+ 154               	.LFB7:
+ 155               	.LSM17:
+ 156               	.LVL7:
+ 157 0000 CF92      		push r12
+ 158 0002 DF92      		push r13
+ 159 0004 FF92      		push r15
+ 160 0006 0F93      		push r16
+ 161 0008 1F93      		push r17
+ 162 000a DF93      		push r29
+ 163 000c CF93      		push r28
+ 164 000e 0F92      		push __tmp_reg__
+ 165 0010 CDB7      		in r28,__SP_L__
+ 166 0012 DEB7      		in r29,__SP_H__
+ 167               	/* prologue: function */
+ 168               	/* frame size = 1 */
+ 169               	/* stack size = 8 */
+ 170               	.L__stack_usage = 8
+ 171 0014 182F      		mov r17,r24
+ 172               	.LVL8:
+ 173               	.LBB36:
+ 174               	.LBB37:
+ 175               	.LSM18:
+ 176 0016 0DB3      		in r16,61-0x20
+ 177 0018 C82E      		mov r12,r24
+ 178 001a DD24      		clr r13
+ 179 001c 21E0      		ldi r18,lo8(1)
+ 180 001e 30E0      		ldi r19,hi8(1)
+ 181 0020 082E      		mov r0,r24
+ 182 0022 00C0      		rjmp 2f
+ 183 0024 220F      	1:	lsl r18
+ 184 0026 331F      		rol r19
+ 185 0028 0A94      	2:	dec r0
+ 186 002a 02F4      		brpl 1b
+ 187 002c F22E      		mov r15,r18
+ 188 002e 0223      		and r16,r18
+ 189               	.LBE37:
+ 190               	.LBE36:
+ 191               	.LSM19:
+ 192 0030 01F0      		breq .L11
+ 193               	.LVL9:
+ 194               	.LSM20:
+ 195 0032 6983      		std Y+1,r22
+ 196 0034 0E94 0000 		call __disable_interrupt
+ 197               	.LVL10:
+ 198 0038 6981      		ldd r22,Y+1
+ 199               	.LVL11:
+ 200               	.L11:
+ 201               	.LSM21:
+ 202 003a 8091 6900 		lds r24,105
+ 203 003e F601      		movw r30,r12
+ 204 0040 EE0F      		lsl r30
+ 205 0042 FF1F      		rol r31
+ 206 0044 23E0      		ldi r18,lo8(3)
+ 207 0046 30E0      		ldi r19,hi8(3)
+ 208 0048 0E2E      		mov r0,r30
+ 209 004a 00C0      		rjmp 2f
+ 210 004c 220F      	1:	lsl r18
+ 211 004e 331F      		rol r19
+ 212 0050 0A94      	2:	dec r0
+ 213 0052 02F4      		brpl 1b
+ 214 0054 2095      		com r18
+ 215 0056 2823      		and r18,r24
+ 216 0058 2093 6900 		sts 105,r18
+ 217               	.LSM22:
+ 218 005c 8091 6900 		lds r24,105
+ 219 0060 70E0      		ldi r23,lo8(0)
+ 220 0062 00C0      		rjmp 2f
+ 221 0064 660F      	1:	lsl r22
+ 222 0066 771F      		rol r23
+ 223 0068 EA95      	2:	dec r30
+ 224 006a 02F4      		brpl 1b
+ 225 006c 862B      		or r24,r22
+ 226 006e 8093 6900 		sts 105,r24
+ 227               	.LSM23:
+ 228 0072 0023      		tst r16
+ 229 0074 01F0      		breq .L10
+ 230               	.LVL12:
+ 231               	.LBB38:
+ 232               	.LBB39:
+ 233               	.LSM24:
+ 234 0076 8CB3      		in r24,60-0x20
+ 235 0078 8F29      		or r24,r15
+ 236 007a 8CBB      		out 60-0x20,r24
+ 237               	.LBE39:
+ 238               	.LBE38:
+ 239               	.LSM25:
+ 240 007c 812F      		mov r24,r17
+ 241 007e 0E94 0000 		call __enable_interrupt
+ 242               	.LVL13:
+ 243               	.L10:
+ 244               	/* epilogue start */
+ 245               	.LSM26:
+ 246 0082 0F90      		pop __tmp_reg__
+ 247 0084 CF91      		pop r28
+ 248 0086 DF91      		pop r29
+ 249 0088 1F91      		pop r17
+ 250 008a 0F91      		pop r16
+ 251 008c FF90      		pop r15
+ 252 008e DF90      		pop r13
+ 253 0090 CF90      		pop r12
+ 254               	.LVL14:
+ 255 0092 0895      		ret
+ 256               	.LFE7:
+ 258               		.section	.text.__call_interrupt_handler,"ax",@progbits
+ 260               	__call_interrupt_handler:
+ 261               	.LFB10:
+ 262               	.LSM27:
+ 263               	.LVL15:
+ 264 0000 CF93      		push r28
+ 265 0002 DF93      		push r29
+ 266               	/* prologue: function */
+ 267               	/* frame size = 0 */
+ 268               	/* stack size = 2 */
+ 269               	.L__stack_usage = 2
+ 270               	.LSM28:
+ 271 0004 90E0      		ldi r25,lo8(0)
+ 272 0006 FC01      		movw r30,r24
+ 273 0008 EE0F      		lsl r30
+ 274 000a FF1F      		rol r31
+ 275 000c EE0F      		lsl r30
+ 276 000e FF1F      		rol r31
+ 277 0010 E80F      		add r30,r24
+ 278 0012 F91F      		adc r31,r25
+ 279 0014 E050      		subi r30,lo8(-(__interruptMap))
+ 280 0016 F040      		sbci r31,hi8(-(__interruptMap))
+ 281 0018 C381      		ldd r28,Z+3
+ 282 001a D481      		ldd r29,Z+4
+ 283               	.LVL16:
+ 284               	.LSM29:
+ 285 001c 2097      		sbiw r28,0
+ 286 001e 01F0      		breq .L13
+ 287               	.LSM30:
+ 288 0020 8A89      		ldd r24,Y+18
+ 289 0022 9B89      		ldd r25,Y+19
+ 290               	.LVL17:
+ 291 0024 0097      		sbiw r24,0
+ 292 0026 01F0      		breq .L13
+ 293               	.LBB40:
+ 294               	.LSM31:
+ 295 0028 E889      		ldd r30,Y+16
+ 296 002a F989      		ldd r31,Y+17
+ 297               	.LVL18:
+ 298 002c CE01      		movw r24,r28
+ 299 002e 0995      		icall
+ 300 0030 682F      		mov r22,r24
+ 301               	.LVL19:
+ 302               	.LSM32:
+ 303 0032 EA89      		ldd r30,Y+18
+ 304 0034 FB89      		ldd r31,Y+19
+ 305 0036 CE01      		movw r24,r28
+ 306               	.LVL20:
+ 307 0038 0995      		icall
+ 308               	.LVL21:
+ 309               	.L13:
+ 310               	/* epilogue start */
+ 311               	.LBE40:
+ 312               	.LSM33:
+ 313 003a DF91      		pop r29
+ 314 003c CF91      		pop r28
+ 315               	.LVL22:
+ 316 003e 0895      		ret
+ 317               	.LFE10:
+ 319               		.section	.text.__set_gpio_direction,"ax",@progbits
+ 321               	__set_gpio_direction:
+ 322               	.LFB15:
+ 323               	.LSM34:
+ 324               	.LVL23:
+ 325               	/* prologue: function */
+ 326               	/* frame size = 0 */
+ 327               	/* stack size = 0 */
+ 328               	.L__stack_usage = 0
+ 329 0000 FC01      		movw r30,r24
+ 330               	.LSM35:
+ 331 0002 0097      		sbiw r24,0
+ 332 0004 01F4      		brne .+2
+ 333 0006 00C0      		rjmp .L26
+ 334               	.LSM36:
+ 335 0008 4281      		ldd r20,Z+2
+ 336               	.LVL24:
+ 337               	.LSM37:
+ 338 000a 2181      		ldd r18,Z+1
+ 339               	.LVL25:
+ 340               	.LSM38:
+ 341 000c 6430      		cpi r22,lo8(4)
+ 342 000e 01F0      		breq .L19
+ 343 0010 6530      		cpi r22,lo8(5)
+ 344 0012 00F4      		brsh .L22
+ 345 0014 6230      		cpi r22,lo8(2)
+ 346 0016 01F0      		breq .+2
+ 347 0018 00C0      		rjmp .L17
+ 348 001a 00C0      		rjmp .L29
+ 349               	.L22:
+ 350 001c 6530      		cpi r22,lo8(5)
+ 351 001e 01F0      		breq .L20
+ 352 0020 6630      		cpi r22,lo8(6)
+ 353 0022 01F0      		breq .+2
+ 354 0024 00C0      		rjmp .L17
+ 355 0026 00C0      		rjmp .L30
+ 356               	.L19:
+ 357               	.LSM39:
+ 358 0028 A085      		ldd r26,Z+8
+ 359 002a B185      		ldd r27,Z+9
+ 360 002c 3C91      		ld r19,X
+ 361 002e 81E0      		ldi r24,lo8(1)
+ 362 0030 90E0      		ldi r25,hi8(1)
+ 363               	.LVL26:
+ 364 0032 00C0      		rjmp 2f
+ 365 0034 880F      	1:	lsl r24
+ 366 0036 991F      		rol r25
+ 367 0038 2A95      	2:	dec r18
+ 368 003a 02F4      		brpl 1b
+ 369 003c 282F      		mov r18,r24
+ 370 003e 2095      		com r18
+ 371 0040 2323      		and r18,r19
+ 372 0042 2C93      		st X,r18
+ 373               	.LSM40:
+ 374 0044 4230      		cpi r20,lo8(2)
+ 375 0046 01F4      		brne .L23
+ 376               	.LSM41:
+ 377               	/* #APP */
+ 378               	 ;  238 "firmware/gpio.c" 1
+ 379 0048 0000      		nop
+ 380               	 ;  0 "" 2
+ 381               	/* #NOAPP */
+ 382               	.L23:
+ 383               	.LSM42:
+ 384 004a A485      		ldd r26,Z+12
+ 385 004c B585      		ldd r27,Z+13
+ 386 004e 00C0      		rjmp .L27
+ 387               	.L20:
+ 388               	.LSM43:
+ 389 0050 A085      		ldd r26,Z+8
+ 390 0052 B185      		ldd r27,Z+9
+ 391 0054 3C91      		ld r19,X
+ 392 0056 81E0      		ldi r24,lo8(1)
+ 393 0058 90E0      		ldi r25,hi8(1)
+ 394 005a 00C0      		rjmp 2f
+ 395 005c 880F      	1:	lsl r24
+ 396 005e 991F      		rol r25
+ 397 0060 2A95      	2:	dec r18
+ 398 0062 02F4      		brpl 1b
+ 399 0064 382B      		or r19,r24
+ 400 0066 3C93      		st X,r19
+ 401               	.LSM44:
+ 402 0068 4130      		cpi r20,lo8(1)
+ 403 006a 01F4      		brne .L25
+ 404               	.LSM45:
+ 405               	/* #APP */
+ 406               	 ;  248 "firmware/gpio.c" 1
+ 407 006c 0000      		nop
+ 408               	 ;  0 "" 2
+ 409               	/* #NOAPP */
+ 410               	.L25:
+ 411               	.LSM46:
+ 412 006e A485      		ldd r26,Z+12
+ 413 0070 B585      		ldd r27,Z+13
+ 414 0072 9C91      		ld r25,X
+ 415 0074 982B      		or r25,r24
+ 416 0076 00C0      		rjmp .L28
+ 417               	.L29:
+ 418               	.LSM47:
+ 419 0078 A485      		ldd r26,Z+12
+ 420 007a B585      		ldd r27,Z+13
+ 421 007c 3C91      		ld r19,X
+ 422 007e 81E0      		ldi r24,lo8(1)
+ 423 0080 90E0      		ldi r25,hi8(1)
+ 424 0082 00C0      		rjmp 2f
+ 425 0084 880F      	1:	lsl r24
+ 426 0086 991F      		rol r25
+ 427 0088 2A95      	2:	dec r18
+ 428 008a 02F4      		brpl 1b
+ 429 008c 282F      		mov r18,r24
+ 430 008e 2095      		com r18
+ 431 0090 2323      		and r18,r19
+ 432 0092 2C93      		st X,r18
+ 433               	.LSM48:
+ 434 0094 A085      		ldd r26,Z+8
+ 435 0096 B185      		ldd r27,Z+9
+ 436               	.L27:
+ 437 0098 2C91      		ld r18,X
+ 438 009a 282B      		or r18,r24
+ 439 009c 2C93      		st X,r18
+ 440               	.LSM49:
+ 441 009e 00C0      		rjmp .L24
+ 442               	.L30:
+ 443               	.LVL27:
+ 444               	.LBB41:
+ 445               	.LBB42:
+ 446               	.LSM50:
+ 447 00a0 9081      		ld r25,Z
+ 448 00a2 8091 0000 		lds r24,analogPorts
+ 449 00a6 9817      		cp r25,r24
+ 450 00a8 01F0      		breq .L24
+ 451               	.LSM51:
+ 452 00aa 80E0      		ldi r24,lo8(0)
+ 453 00ac 0895      		ret
+ 454               	.LVL28:
+ 455               	.L17:
+ 456               	.LBE42:
+ 457               	.LBE41:
+ 458               	.LSM52:
+ 459 00ae A485      		ldd r26,Z+12
+ 460 00b0 B585      		ldd r27,Z+13
+ 461 00b2 3C91      		ld r19,X
+ 462 00b4 81E0      		ldi r24,lo8(1)
+ 463 00b6 90E0      		ldi r25,hi8(1)
+ 464 00b8 00C0      		rjmp 2f
+ 465 00ba 880F      	1:	lsl r24
+ 466 00bc 991F      		rol r25
+ 467 00be 2A95      	2:	dec r18
+ 468 00c0 02F4      		brpl 1b
+ 469 00c2 8095      		com r24
+ 470 00c4 3823      		and r19,r24
+ 471 00c6 3C93      		st X,r19
+ 472               	.LSM53:
+ 473 00c8 A085      		ldd r26,Z+8
+ 474 00ca B185      		ldd r27,Z+9
+ 475 00cc 9C91      		ld r25,X
+ 476 00ce 9823      		and r25,r24
+ 477               	.L28:
+ 478 00d0 9C93      		st X,r25
+ 479               	.L24:
+ 480               	.LSM54:
+ 481 00d2 6283      		std Z+2,r22
+ 482               	.LSM55:
+ 483 00d4 81E0      		ldi r24,lo8(1)
+ 484 00d6 0895      		ret
+ 485               	.LVL29:
+ 486               	.L26:
+ 487               	.LSM56:
+ 488 00d8 80E0      		ldi r24,lo8(0)
+ 489               	.LSM57:
+ 490 00da 0895      		ret
+ 491               	.LFE15:
+ 493               		.section	.text.__get_gpio_value,"ax",@progbits
+ 495               	__get_gpio_value:
+ 496               	.LFB16:
+ 497               	.LSM58:
+ 498               	.LVL30:
+ 499               	/* prologue: function */
+ 500               	/* frame size = 0 */
+ 501               	/* stack size = 0 */
+ 502               	.L__stack_usage = 0
+ 503 0000 FC01      		movw r30,r24
+ 504               	.LSM59:
+ 505 0002 0097      		sbiw r24,0
+ 506 0004 01F0      		breq .L33
+ 507               	.LSM60:
+ 508 0006 A285      		ldd r26,Z+10
+ 509 0008 B385      		ldd r27,Z+11
+ 510 000a 2C91      		ld r18,X
+ 511 000c 4181      		ldd r20,Z+1
+ 512 000e 81E0      		ldi r24,lo8(1)
+ 513 0010 90E0      		ldi r25,hi8(1)
+ 514               	.LVL31:
+ 515 0012 042E      		mov r0,r20
+ 516 0014 00C0      		rjmp 2f
+ 517 0016 880F      	1:	lsl r24
+ 518 0018 991F      		rol r25
+ 519 001a 0A94      	2:	dec r0
+ 520 001c 02F4      		brpl 1b
+ 521 001e 30E0      		ldi r19,lo8(0)
+ 522 0020 8223      		and r24,r18
+ 523 0022 9323      		and r25,r19
+ 524 0024 00C0      		rjmp 2f
+ 525 0026 9595      	1:	asr r25
+ 526 0028 8795      		ror r24
+ 527 002a 4A95      	2:	dec r20
+ 528 002c 02F4      		brpl 1b
+ 529 002e 0895      		ret
+ 530               	.L33:
+ 531               	.LSM61:
+ 532 0030 80E0      		ldi r24,lo8(0)
+ 533               	.LSM62:
+ 534 0032 0895      		ret
+ 535               	.LFE16:
+ 537               		.section	.text.__vector_1,"ax",@progbits
+ 538               	.global	__vector_1
+ 540               	__vector_1:
+ 541               	.LFB11:
+ 542               	.LSM63:
+ 543 0000 1F92      		push __zero_reg__
+ 544 0002 0F92      		push r0
+ 545 0004 0FB6      		in r0,__SREG__
+ 546 0006 0F92      		push r0
+ 547 0008 0BB6      		in r0,91-0x20
+ 548 000a 0F92      		push r0
+ 549 000c 1124      		clr __zero_reg__
+ 550 000e 2F93      		push r18
+ 551 0010 3F93      		push r19
+ 552 0012 4F93      		push r20
+ 553 0014 5F93      		push r21
+ 554 0016 6F93      		push r22
+ 555 0018 7F93      		push r23
+ 556 001a 8F93      		push r24
+ 557 001c 9F93      		push r25
+ 558 001e AF93      		push r26
+ 559 0020 BF93      		push r27
+ 560 0022 EF93      		push r30
+ 561 0024 FF93      		push r31
+ 562               	/* prologue: Signal */
+ 563               	/* frame size = 0 */
+ 564               	/* stack size = 16 */
+ 565               	.L__stack_usage = 16
+ 566               	.LSM64:
+ 567 0026 80E0      		ldi r24,lo8(0)
+ 568 0028 0E94 0000 		call __call_interrupt_handler
+ 569               	/* epilogue start */
+ 570               	.LSM65:
+ 571 002c FF91      		pop r31
+ 572 002e EF91      		pop r30
+ 573 0030 BF91      		pop r27
+ 574 0032 AF91      		pop r26
+ 575 0034 9F91      		pop r25
+ 576 0036 8F91      		pop r24
+ 577 0038 7F91      		pop r23
+ 578 003a 6F91      		pop r22
+ 579 003c 5F91      		pop r21
+ 580 003e 4F91      		pop r20
+ 581 0040 3F91      		pop r19
+ 582 0042 2F91      		pop r18
+ 583 0044 0F90      		pop r0
+ 584 0046 0BBE      		out 91-0x20,r0
+ 585 0048 0F90      		pop r0
+ 586 004a 0FBE      		out __SREG__,r0
+ 587 004c 0F90      		pop r0
+ 588 004e 1F90      		pop __zero_reg__
+ 589 0050 1895      		reti
+ 590               	.LFE11:
+ 592               		.section	.text.__vector_2,"ax",@progbits
+ 593               	.global	__vector_2
+ 595               	__vector_2:
+ 596               	.LFB12:
+ 597               	.LSM66:
+ 598 0000 1F92      		push __zero_reg__
+ 599 0002 0F92      		push r0
+ 600 0004 0FB6      		in r0,__SREG__
+ 601 0006 0F92      		push r0
+ 602 0008 0BB6      		in r0,91-0x20
+ 603 000a 0F92      		push r0
+ 604 000c 1124      		clr __zero_reg__
+ 605 000e 2F93      		push r18
+ 606 0010 3F93      		push r19
+ 607 0012 4F93      		push r20
+ 608 0014 5F93      		push r21
+ 609 0016 6F93      		push r22
+ 610 0018 7F93      		push r23
+ 611 001a 8F93      		push r24
+ 612 001c 9F93      		push r25
+ 613 001e AF93      		push r26
+ 614 0020 BF93      		push r27
+ 615 0022 EF93      		push r30
+ 616 0024 FF93      		push r31
+ 617               	/* prologue: Signal */
+ 618               	/* frame size = 0 */
+ 619               	/* stack size = 16 */
+ 620               	.L__stack_usage = 16
+ 621               	.LSM67:
+ 622 0026 81E0      		ldi r24,lo8(1)
+ 623 0028 0E94 0000 		call __call_interrupt_handler
+ 624               	/* epilogue start */
+ 625               	.LSM68:
+ 626 002c FF91      		pop r31
+ 627 002e EF91      		pop r30
+ 628 0030 BF91      		pop r27
+ 629 0032 AF91      		pop r26
+ 630 0034 9F91      		pop r25
+ 631 0036 8F91      		pop r24
+ 632 0038 7F91      		pop r23
+ 633 003a 6F91      		pop r22
+ 634 003c 5F91      		pop r21
+ 635 003e 4F91      		pop r20
+ 636 0040 3F91      		pop r19
+ 637 0042 2F91      		pop r18
+ 638 0044 0F90      		pop r0
+ 639 0046 0BBE      		out 91-0x20,r0
+ 640 0048 0F90      		pop r0
+ 641 004a 0FBE      		out __SREG__,r0
+ 642 004c 0F90      		pop r0
+ 643 004e 1F90      		pop __zero_reg__
+ 644 0050 1895      		reti
+ 645               	.LFE12:
+ 647               		.section	.text.__vector_3,"ax",@progbits
+ 648               	.global	__vector_3
+ 650               	__vector_3:
+ 651               	.LFB13:
+ 652               	.LSM69:
+ 653 0000 1F92      		push __zero_reg__
+ 654 0002 0F92      		push r0
+ 655 0004 0FB6      		in r0,__SREG__
+ 656 0006 0F92      		push r0
+ 657 0008 0BB6      		in r0,91-0x20
+ 658 000a 0F92      		push r0
+ 659 000c 1124      		clr __zero_reg__
+ 660 000e 2F93      		push r18
+ 661 0010 3F93      		push r19
+ 662 0012 4F93      		push r20
+ 663 0014 5F93      		push r21
+ 664 0016 6F93      		push r22
+ 665 0018 7F93      		push r23
+ 666 001a 8F93      		push r24
+ 667 001c 9F93      		push r25
+ 668 001e AF93      		push r26
+ 669 0020 BF93      		push r27
+ 670 0022 EF93      		push r30
+ 671 0024 FF93      		push r31
+ 672               	/* prologue: Signal */
+ 673               	/* frame size = 0 */
+ 674               	/* stack size = 16 */
+ 675               	.L__stack_usage = 16
+ 676               	.LSM70:
+ 677 0026 82E0      		ldi r24,lo8(2)
+ 678 0028 0E94 0000 		call __call_interrupt_handler
+ 679               	/* epilogue start */
+ 680               	.LSM71:
+ 681 002c FF91      		pop r31
+ 682 002e EF91      		pop r30
+ 683 0030 BF91      		pop r27
+ 684 0032 AF91      		pop r26
+ 685 0034 9F91      		pop r25
+ 686 0036 8F91      		pop r24
+ 687 0038 7F91      		pop r23
+ 688 003a 6F91      		pop r22
+ 689 003c 5F91      		pop r21
+ 690 003e 4F91      		pop r20
+ 691 0040 3F91      		pop r19
+ 692 0042 2F91      		pop r18
+ 693 0044 0F90      		pop r0
+ 694 0046 0BBE      		out 91-0x20,r0
+ 695 0048 0F90      		pop r0
+ 696 004a 0FBE      		out __SREG__,r0
+ 697 004c 0F90      		pop r0
+ 698 004e 1F90      		pop __zero_reg__
+ 699 0050 1895      		reti
+ 700               	.LFE13:
+ 702               		.section	.text.GPIOSetDirection,"ax",@progbits
+ 703               	.global	GPIOSetDirection
+ 705               	GPIOSetDirection:
+ 706               	.LFB21:
+ 707               	.LSM72:
+ 708               	.LVL32:
+ 709               	/* prologue: function */
+ 710               	/* frame size = 0 */
+ 711               	/* stack size = 0 */
+ 712               	.L__stack_usage = 0
+ 713               	.LSM73:
+ 714 0000 0097      		sbiw r24,0
+ 715 0002 01F0      		breq .L37
+ 716               	.LSM74:
+ 717 0004 DC01      		movw r26,r24
+ 718 0006 1E96      		adiw r26,14
+ 719 0008 ED91      		ld r30,X+
+ 720 000a FC91      		ld r31,X
+ 721 000c 1F97      		sbiw r26,14+1
+ 722 000e 3097      		sbiw r30,0
+ 723 0010 01F0      		breq .L37
+ 724               	.LSM75:
+ 725 0012 0995      		icall
+ 726               	.LVL33:
+ 727               	.L37:
+ 728 0014 0895      		ret
+ 729               	.LFE21:
+ 731               		.section	.text.GPIOInterruptInstall,"ax",@progbits
+ 732               	.global	GPIOInterruptInstall
+ 734               	GPIOInterruptInstall:
+ 735               	.LFB22:
+ 736               	.LSM76:
+ 737               	.LVL34:
+ 738 0000 CF92      		push r12
+ 739 0002 DF92      		push r13
+ 740 0004 EF92      		push r14
+ 741 0006 FF92      		push r15
+ 742 0008 0F93      		push r16
+ 743 000a 1F93      		push r17
+ 744 000c CF93      		push r28
+ 745 000e DF93      		push r29
+ 746               	/* prologue: function */
+ 747               	/* frame size = 0 */
+ 748               	/* stack size = 8 */
+ 749               	.L__stack_usage = 8
+ 750 0010 EC01      		movw r28,r24
+ 751 0012 F62E      		mov r15,r22
+ 752 0014 8A01      		movw r16,r20
+ 753 0016 6901      		movw r12,r18
+ 754               	.LSM77:
+ 755 0018 0097      		sbiw r24,0
+ 756 001a 01F0      		breq .L39
+ 757               	.LVL35:
+ 758               	.LBB43:
+ 759               	.LBB44:
+ 760               	.LSM78:
+ 761 001c 4115      		cp r20,__zero_reg__
+ 762 001e 5105      		cpc r21,__zero_reg__
+ 763 0020 01F0      		breq .L39
+ 764               	.LVL36:
+ 765               	.LBB45:
+ 766               	.LBB46:
+ 767               	.LSM79:
+ 768 0022 0E94 0000 		call __get_gpio_int_num
+ 769               	.LVL37:
+ 770 0026 E82E      		mov r14,r24
+ 771               	.LBE46:
+ 772               	.LBE45:
+ 773               	.LSM80:
+ 774 0028 87FD      		sbrc r24,7
+ 775 002a 00C0      		rjmp .L39
+ 776               	.LVL38:
+ 777               	.LSM81:
+ 778 002c 6F2D      		mov r22,r15
+ 779 002e 0E94 0000 		call __set_interrupt_sense_control
+ 780               	.LVL39:
+ 781               	.LSM82:
+ 782 0032 EC82      		std Y+4,r14
+ 783               	.LSM83:
+ 784 0034 FD82      		std Y+5,r15
+ 785               	.LSM84:
+ 786 0036 1B8B      		std Y+19,r17
+ 787 0038 0A8B      		std Y+18,r16
+ 788               	.LSM85:
+ 789 003a 81E0      		ldi r24,lo8(1)
+ 790 003c 8B83      		std Y+3,r24
+ 791               	.LSM86:
+ 792 003e DF82      		std Y+7,r13
+ 793 0040 CE82      		std Y+6,r12
+ 794               	.LSM87:
+ 795 0042 8E2D      		mov r24,r14
+ 796 0044 9927      		clr r25
+ 797 0046 87FD      		sbrc r24,7
+ 798 0048 9095      		com r25
+ 799 004a FC01      		movw r30,r24
+ 800 004c EE0F      		lsl r30
+ 801 004e FF1F      		rol r31
+ 802 0050 EE0F      		lsl r30
+ 803 0052 FF1F      		rol r31
+ 804 0054 E80F      		add r30,r24
+ 805 0056 F91F      		adc r31,r25
+ 806 0058 E050      		subi r30,lo8(-(__interruptMap))
+ 807 005a F040      		sbci r31,hi8(-(__interruptMap))
+ 808 005c D483      		std Z+4,r29
+ 809 005e C383      		std Z+3,r28
+ 810               	.LVL40:
+ 811               	.L39:
+ 812               	/* epilogue start */
+ 813               	.LBE44:
+ 814               	.LBE43:
+ 815               	.LSM88:
+ 816 0060 DF91      		pop r29
+ 817 0062 CF91      		pop r28
+ 818               	.LVL41:
+ 819 0064 1F91      		pop r17
+ 820 0066 0F91      		pop r16
+ 821               	.LVL42:
+ 822 0068 FF90      		pop r15
+ 823               	.LVL43:
+ 824 006a EF90      		pop r14
+ 825 006c DF90      		pop r13
+ 826 006e CF90      		pop r12
+ 827               	.LVL44:
+ 828 0070 0895      		ret
+ 829               	.LFE22:
+ 831               		.section	.text.GPIOInterruptEnable,"ax",@progbits
+ 832               	.global	GPIOInterruptEnable
+ 834               	GPIOInterruptEnable:
+ 835               	.LFB23:
+ 836               	.LSM89:
+ 837               	.LVL45:
+ 838               	/* prologue: function */
+ 839               	/* frame size = 0 */
+ 840               	/* stack size = 0 */
+ 841               	.L__stack_usage = 0
+ 842 0000 FC01      		movw r30,r24
+ 843               	.LSM90:
+ 844 0002 0097      		sbiw r24,0
+ 845 0004 01F0      		breq .L41
+ 846               	.LSM91:
+ 847 0006 8381      		ldd r24,Z+3
+ 848               	.LVL46:
+ 849 0008 8823      		tst r24
+ 850 000a 01F0      		breq .L41
+ 851               	.LSM92:
+ 852 000c 8481      		ldd r24,Z+4
+ 853 000e 0E94 0000 		call __enable_interrupt
+ 854               	.LVL47:
+ 855               	.L41:
+ 856 0012 0895      		ret
+ 857               	.LFE23:
+ 859               		.section	.text.GPIOInterruptDisable,"ax",@progbits
+ 860               	.global	GPIOInterruptDisable
+ 862               	GPIOInterruptDisable:
+ 863               	.LFB24:
+ 864               	.LSM93:
+ 865               	.LVL48:
+ 866               	/* prologue: function */
+ 867               	/* frame size = 0 */
+ 868               	/* stack size = 0 */
+ 869               	.L__stack_usage = 0
+ 870 0000 FC01      		movw r30,r24
+ 871               	.LSM94:
+ 872 0002 0097      		sbiw r24,0
+ 873 0004 01F0      		breq .L43
+ 874               	.LSM95:
+ 875 0006 8381      		ldd r24,Z+3
+ 876               	.LVL49:
+ 877 0008 8823      		tst r24
+ 878 000a 01F0      		breq .L43
+ 879               	.LSM96:
+ 880 000c 8481      		ldd r24,Z+4
+ 881 000e 0E94 0000 		call __disable_interrupt
+ 882               	.LVL50:
+ 883               	.L43:
+ 884 0012 0895      		ret
+ 885               	.LFE24:
+ 887               		.section	.text.GPIORelease,"ax",@progbits
+ 888               	.global	GPIORelease
+ 890               	GPIORelease:
+ 891               	.LFB20:
+ 892               	.LSM97:
+ 893               	.LVL51:
+ 894 0000 CF93      		push r28
+ 895 0002 DF93      		push r29
+ 896               	/* prologue: function */
+ 897               	/* frame size = 0 */
+ 898               	/* stack size = 2 */
+ 899               	.L__stack_usage = 2
+ 900 0004 EC01      		movw r28,r24
+ 901               	.LSM98:
+ 902 0006 0097      		sbiw r24,0
+ 903 0008 01F0      		breq .L45
+ 904               	.LSM99:
+ 905 000a 8B81      		ldd r24,Y+3
+ 906               	.LVL52:
+ 907 000c 8823      		tst r24
+ 908 000e 01F0      		breq .L47
+ 909               	.LSM100:
+ 910 0010 CE01      		movw r24,r28
+ 911 0012 0E94 0000 		call GPIOInterruptDisable
+ 912               	.L47:
+ 913               	.LSM101:
+ 914 0016 CE01      		movw r24,r28
+ 915 0018 0E94 0000 		call free
+ 916               	.LVL53:
+ 917               	.L45:
+ 918               	/* epilogue start */
+ 919               	.LSM102:
+ 920 001c DF91      		pop r29
+ 921 001e CF91      		pop r28
+ 922 0020 0895      		ret
+ 923               	.LFE20:
+ 925               		.section	.text.GPIOCreate,"ax",@progbits
+ 926               	.global	GPIOCreate
+ 928               	GPIOCreate:
+ 929               	.LFB19:
+ 930               	.LSM103:
+ 931               	.LVL54:
+ 932 0000 CF92      		push r12
+ 933 0002 DF92      		push r13
+ 934 0004 EF92      		push r14
+ 935 0006 FF92      		push r15
+ 936 0008 1F93      		push r17
+ 937 000a DF93      		push r29
+ 938 000c CF93      		push r28
+ 939 000e 0F92      		push __tmp_reg__
+ 940 0010 CDB7      		in r28,__SP_L__
+ 941 0012 DEB7      		in r29,__SP_H__
+ 942               	/* prologue: function */
+ 943               	/* frame size = 1 */
+ 944               	/* stack size = 8 */
+ 945               	.L__stack_usage = 8
+ 946 0014 182F      		mov r17,r24
+ 947               	.LBB47:
+ 948               	.LBB48:
+ 949               	.LSM104:
+ 950 0016 84E1      		ldi r24,lo8(20)
+ 951 0018 90E0      		ldi r25,hi8(20)
+ 952               	.LVL55:
+ 953 001a 6983      		std Y+1,r22
+ 954 001c 0E94 0000 		call malloc
+ 955               	.LVL56:
+ 956 0020 C82E      		mov r12,r24
+ 957 0022 D92E      		mov r13,r25
+ 958               	.LVL57:
+ 959               	.LBE48:
+ 960               	.LBE47:
+ 961               	.LSM105:
+ 962 0024 6981      		ldd r22,Y+1
+ 963 0026 C114      		cp r12,__zero_reg__
+ 964 0028 D104      		cpc r13,__zero_reg__
+ 965 002a 01F0      		breq .L49
+ 966               	.LVL58:
+ 967               	.LBB49:
+ 968               	.LBB50:
+ 969               	.LBB51:
+ 970               	.LBB52:
+ 971               	.LBB53:
+ 972               	.LBB54:
+ 973               	.LSM106:
+ 974 002c 1430      		cpi r17,lo8(4)
+ 975 002e 00F0      		brlo .L50
+ 976               	.LBE54:
+ 977               	.LBE53:
+ 978               	.LBE52:
+ 979               	.LBE51:
+ 980               	.LSM107:
+ 981 0030 C601      		movw r24,r12
+ 982 0032 0E94 0000 		call GPIORelease
+ 983               	.LVL59:
+ 984               	.LSM108:
+ 985 0036 CC24      		clr r12
+ 986 0038 DD24      		clr r13
+ 987               	.LVL60:
+ 988               	.L49:
+ 989               	.LBE50:
+ 990               	.LBE49:
+ 991               	.LSM109:
+ 992 003a C601      		movw r24,r12
+ 993               	/* epilogue start */
+ 994 003c 0F90      		pop __tmp_reg__
+ 995 003e CF91      		pop r28
+ 996 0040 DF91      		pop r29
+ 997 0042 1F91      		pop r17
+ 998               	.LVL61:
+ 999 0044 FF90      		pop r15
+ 1000 0046 EF90      		pop r14
+ 1001 0048 DF90      		pop r13
+ 1002 004a CF90      		pop r12
+ 1003 004c 0895      		ret
+ 1004               	.LVL62:
+ 1005               	.L50:
+ 1006               	.LBB58:
+ 1007               	.LBB57:
+ 1008               	.LBB56:
+ 1009               	.LBB55:
+ 1010               	.LSM110:
+ 1011 004e F601      		movw r30,r12
+ 1012 0050 1083      		st Z,r17
+ 1013               	.LSM111:
+ 1014 0052 6183      		std Z+1,r22
+ 1015 0054 812F      		mov r24,r17
+ 1016 0056 90E0      		ldi r25,lo8(0)
+ 1017 0058 880F      		lsl r24
+ 1018 005a 991F      		rol r25
+ 1019 005c FC01      		movw r30,r24
+ 1020 005e E050      		subi r30,lo8(-(CSWTCH.4))
+ 1021 0060 F040      		sbci r31,hi8(-(CSWTCH.4))
+ 1022 0062 4081      		ld r20,Z
+ 1023 0064 5181      		ldd r21,Z+1
+ 1024 0066 FC01      		movw r30,r24
+ 1025 0068 E050      		subi r30,lo8(-(CSWTCH.5))
+ 1026 006a F040      		sbci r31,hi8(-(CSWTCH.5))
+ 1027 006c 2081      		ld r18,Z
+ 1028 006e 3181      		ldd r19,Z+1
+ 1029               	.LVL63:
+ 1030               	.LSM112:
+ 1031 0070 8050      		subi r24,lo8(-(CSWTCH.3))
+ 1032 0072 9040      		sbci r25,hi8(-(CSWTCH.3))
+ 1033 0074 FC01      		movw r30,r24
+ 1034               	.LVL64:
+ 1035 0076 8081      		ld r24,Z
+ 1036 0078 9181      		ldd r25,Z+1
+ 1037 007a F601      		movw r30,r12
+ 1038 007c 9187      		std Z+9,r25
+ 1039 007e 8087      		std Z+8,r24
+ 1040               	.LSM113:
+ 1041 0080 5587      		std Z+13,r21
+ 1042 0082 4487      		std Z+12,r20
+ 1043               	.LSM114:
+ 1044 0084 3387      		std Z+11,r19
+ 1045 0086 2287      		std Z+10,r18
+ 1046               	.LBE55:
+ 1047               	.LBE56:
+ 1048               	.LSM115:
+ 1049 0088 80E0      		ldi r24,lo8(gs(__set_gpio_direction))
+ 1050 008a 90E0      		ldi r25,hi8(gs(__set_gpio_direction))
+ 1051 008c 9787      		std Z+15,r25
+ 1052 008e 8687      		std Z+14,r24
+ 1053               	.LSM116:
+ 1054 0090 80E0      		ldi r24,lo8(gs(__get_gpio_value))
+ 1055 0092 90E0      		ldi r25,hi8(gs(__get_gpio_value))
+ 1056 0094 918B      		std Z+17,r25
+ 1057 0096 808B      		std Z+16,r24
+ 1058               	.LSM117:
+ 1059 0098 C601      		movw r24,r12
+ 1060 009a 60E0      		ldi r22,lo8(0)
+ 1061               	.LVL65:
+ 1062 009c 0E94 0000 		call GPIOSetDirection
+ 1063               	.LVL66:
+ 1064 00a0 00C0      		rjmp .L49
+ 1065               	.LBE57:
+ 1066               	.LBE58:
+ 1067               	.LFE19:
+ 1069               		.section	.text.GPIOInterruptChangeSense,"ax",@progbits
+ 1070               	.global	GPIOInterruptChangeSense
+ 1072               	GPIOInterruptChangeSense:
+ 1073               	.LFB25:
+ 1074               	.LSM118:
+ 1075               	.LVL67:
+ 1076 0000 1F93      		push r17
+ 1077 0002 CF93      		push r28
+ 1078 0004 DF93      		push r29
+ 1079               	/* prologue: function */
+ 1080               	/* frame size = 0 */
+ 1081               	/* stack size = 3 */
+ 1082               	.L__stack_usage = 3
+ 1083 0006 EC01      		movw r28,r24
+ 1084 0008 162F      		mov r17,r22
+ 1085               	.LSM119:
+ 1086 000a 0097      		sbiw r24,0
+ 1087 000c 01F0      		breq .L51
+ 1088               	.LVL68:
+ 1089               	.LSM120:
+ 1090 000e 8B81      		ldd r24,Y+3
+ 1091               	.LVL69:
+ 1092 0010 8823      		tst r24
+ 1093 0012 01F0      		breq .L51
+ 1094               	.LSM121:
+ 1095 0014 6D81      		ldd r22,Y+5
+ 1096 0016 6117      		cp r22,r17
+ 1097 0018 01F0      		breq .L51
+ 1098               	.LSM122:
+ 1099 001a 8C81      		ldd r24,Y+4
+ 1100 001c 0E94 0000 		call __set_interrupt_sense_control
+ 1101               	.LSM123:
+ 1102 0020 1D83      		std Y+5,r17
+ 1103               	.L51:
+ 1104               	/* epilogue start */
+ 1105               	.LSM124:
+ 1106 0022 DF91      		pop r29
+ 1107 0024 CF91      		pop r28
+ 1108               	.LVL70:
+ 1109 0026 1F91      		pop r17
+ 1110               	.LVL71:
+ 1111 0028 0895      		ret
+ 1112               	.LFE25:
+ 1114               		.section	.text.GPIOGetPinValue,"ax",@progbits
+ 1115               	.global	GPIOGetPinValue
+ 1117               	GPIOGetPinValue:
+ 1118               	.LFB26:
+ 1119               	.LSM125:
+ 1120               	.LVL72:
+ 1121               	/* prologue: function */
+ 1122               	/* frame size = 0 */
+ 1123               	/* stack size = 0 */
+ 1124               	.L__stack_usage = 0
+ 1125               	.LSM126:
+ 1126 0000 0097      		sbiw r24,0
+ 1127 0002 01F0      		breq .L55
+ 1128               	.LSM127:
+ 1129 0004 DC01      		movw r26,r24
+ 1130 0006 1E96      		adiw r26,14
+ 1131 0008 2D91      		ld r18,X+
+ 1132 000a 3C91      		ld r19,X
+ 1133 000c 1F97      		sbiw r26,14+1
+ 1134 000e 2115      		cp r18,__zero_reg__
+ 1135 0010 3105      		cpc r19,__zero_reg__
+ 1136 0012 01F0      		breq .L56
+ 1137               	.LSM128:
+ 1138 0014 5096      		adiw r26,16
+ 1139 0016 ED91      		ld r30,X+
+ 1140 0018 FC91      		ld r31,X
+ 1141 001a 5197      		sbiw r26,16+1
+ 1142 001c 0995      		icall
+ 1143               	.LVL73:
+ 1144 001e 0895      		ret
+ 1145               	.LVL74:
+ 1146               	.L55:
+ 1147               	.LSM129:
+ 1148 0020 80E0      		ldi r24,lo8(0)
+ 1149               	.LVL75:
+ 1150 0022 0895      		ret
+ 1151               	.LVL76:
+ 1152               	.L56:
+ 1153 0024 80E0      		ldi r24,lo8(0)
+ 1154               	.LVL77:
+ 1155               	.LSM130:
+ 1156 0026 0895      		ret
+ 1157               	.LFE26:
+ 1159               		.section	.text.GPIOHasInterruptInstalled,"ax",@progbits
+ 1160               	.global	GPIOHasInterruptInstalled
+ 1162               	GPIOHasInterruptInstalled:
+ 1163               	.LFB27:
+ 1164               	.LSM131:
+ 1165               	.LVL78:
+ 1166               	/* prologue: function */
+ 1167               	/* frame size = 0 */
+ 1168               	/* stack size = 0 */
+ 1169               	.L__stack_usage = 0
+ 1170 0000 FC01      		movw r30,r24
+ 1171               	.LSM132:
+ 1172 0002 0097      		sbiw r24,0
+ 1173 0004 01F0      		breq .L60
+ 1174               	.LSM133:
+ 1175 0006 81E0      		ldi r24,lo8(1)
+ 1176 0008 90E0      		ldi r25,hi8(1)
+ 1177               	.LVL79:
+ 1178 000a 2381      		ldd r18,Z+3
+ 1179 000c 2223      		tst r18
+ 1180 000e 01F4      		brne .L58
+ 1181 0010 80E0      		ldi r24,lo8(0)
+ 1182 0012 90E0      		ldi r25,hi8(0)
+ 1183 0014 0895      		ret
+ 1184               	.L60:
+ 1185               	.LSM134:
+ 1186 0016 80E0      		ldi r24,lo8(0)
+ 1187 0018 90E0      		ldi r25,hi8(0)
+ 1188               	.L58:
+ 1189               	.LSM135:
+ 1190 001a 0895      		ret
+ 1191               	.LFE27:
+ 1193               		.section	.text.GPIOGetPrivData,"ax",@progbits
+ 1194               	.global	GPIOGetPrivData
+ 1196               	GPIOGetPrivData:
+ 1197               	.LFB28:
+ 1198               	.LSM136:
+ 1199               	.LVL80:
+ 1200               	/* prologue: function */
+ 1201               	/* frame size = 0 */
+ 1202               	/* stack size = 0 */
+ 1203               	.L__stack_usage = 0
+ 1204               	.LSM137:
+ 1205 0000 0097      		sbiw r24,0
+ 1206 0002 01F0      		breq .L63
+ 1207               	.LSM138:
+ 1208 0004 FC01      		movw r30,r24
+ 1209 0006 2681      		ldd r18,Z+6
+ 1210 0008 3781      		ldd r19,Z+7
+ 1211 000a 00C0      		rjmp .L62
+ 1212               	.L63:
+ 1213               	.LSM139:
+ 1214 000c 20E0      		ldi r18,lo8(0)
+ 1215 000e 30E0      		ldi r19,hi8(0)
+ 1216               	.L62:
+ 1217               	.LSM140:
+ 1218 0010 C901      		movw r24,r18
+ 1219               	.LVL81:
+ 1220               	/* epilogue start */
+ 1221 0012 0895      		ret
+ 1222               	.LFE28:
+ 1224               	.global	analogPorts
+ 1225               	.global	analogPorts
+ 1226               		.section .bss
+ 1229               	analogPorts:
+ 1230 0000 00        		.skip 1,0
+ 1231               		.data
+ 1234               	__interruptMap:
+ 1235 0000 03        		.byte	3
+ 1236 0001 02        		.byte	2
+ 1237 0002 00        		.byte	0
+ 1238 0003 0000      		.word	0
+ 1239 0005 03        		.byte	3
+ 1240 0006 03        		.byte	3
+ 1241 0007 01        		.byte	1
+ 1242 0008 0000      		.word	0
+ 1243 000a 01        		.byte	1
+ 1244 000b 02        		.byte	2
+ 1245 000c 02        		.byte	2
+ 1246 000d 0000      		.word	0
+ 1249               	CSWTCH.3:
+ 1250 000f 2200      		.word	34
+ 1251 0011 2500      		.word	37
+ 1252 0013 2800      		.word	40
+ 1253 0015 2B00      		.word	43
+ 1256               	CSWTCH.4:
+ 1257 0017 2100      		.word	33
+ 1258 0019 2400      		.word	36
+ 1259 001b 2700      		.word	39
+ 1260 001d 2A00      		.word	42
+ 1263               	CSWTCH.5:
+ 1264 001f 2000      		.word	32
+ 1265 0021 2300      		.word	35
+ 1266 0023 2600      		.word	38
+ 1267 0025 2900      		.word	41
+ 1444               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 gpio.c
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:2      *ABS*:000000000000003f __SREG__
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:3      *ABS*:000000000000003e __SP_H__
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:4      *ABS*:000000000000003d __SP_L__
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:5      *ABS*:0000000000000000 __tmp_reg__
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:6      *ABS*:0000000000000001 __zero_reg__
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:19     .text.__get_gpio_int_num:0000000000000000 __get_gpio_int_num
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:1234   .data:0000000000000000 __interruptMap
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:82     .text.__disable_interrupt:0000000000000000 __disable_interrupt
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:109    .text.__enable_interrupt:0000000000000000 __enable_interrupt
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:153    .text.__set_interrupt_sense_control:0000000000000000 __set_interrupt_sense_control
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:260    .text.__call_interrupt_handler:0000000000000000 __call_interrupt_handler
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:321    .text.__set_gpio_direction:0000000000000000 __set_gpio_direction
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:1229   .bss:0000000000000000 analogPorts
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:495    .text.__get_gpio_value:0000000000000000 __get_gpio_value
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:540    .text.__vector_1:0000000000000000 __vector_1
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:595    .text.__vector_2:0000000000000000 __vector_2
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:650    .text.__vector_3:0000000000000000 __vector_3
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:705    .text.GPIOSetDirection:0000000000000000 GPIOSetDirection
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:734    .text.GPIOInterruptInstall:0000000000000000 GPIOInterruptInstall
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:834    .text.GPIOInterruptEnable:0000000000000000 GPIOInterruptEnable
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:862    .text.GPIOInterruptDisable:0000000000000000 GPIOInterruptDisable
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:890    .text.GPIORelease:0000000000000000 GPIORelease
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:928    .text.GPIOCreate:0000000000000000 GPIOCreate
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:1256   .data:0000000000000017 CSWTCH.4
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:1263   .data:000000000000001f CSWTCH.5
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:1249   .data:000000000000000f CSWTCH.3
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:1072   .text.GPIOInterruptChangeSense:0000000000000000 GPIOInterruptChangeSense
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:1117   .text.GPIOGetPinValue:0000000000000000 GPIOGetPinValue
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:1162   .text.GPIOHasInterruptInstalled:0000000000000000 GPIOHasInterruptInstalled
+/var/folders/5Q/5Q3l9LskF5CDOjJ1wbQQ6U+++TI/-Tmp-//ccxcJEZ7.s:1196   .text.GPIOGetPrivData:0000000000000000 GPIOGetPrivData
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+free
+malloc

@@ -1,0 +1,30 @@
+// Image - "batt_empty" Size 20x15
+// Width  = 20
+// Height = 15
+// Usage: batt_empty(x, y);
+#constant batt_empty    $media_SetSector(0x0000, 0x0000); media_Image
+
+// Image - "batt_level_1" Size 20x15
+// Width  = 20
+// Height = 15
+// Usage: batt_level_1(x, y);
+#constant batt_level_1    $media_SetSector(0x0000, 0x0002); media_Image
+
+// Image - "batt_level_2" Size 20x15
+// Width  = 20
+// Height = 15
+// Usage: batt_level_2(x, y);
+#constant batt_level_2    $media_SetSector(0x0000, 0x0004); media_Image
+
+// Image - "batt_level_3" Size 20x15
+// Width  = 20
+// Height = 15
+// Usage: batt_level_3(x, y);
+#constant batt_level_3    $media_SetSector(0x0000, 0x0006); media_Image
+
+// Image - "batt_full" Size 20x15
+// Width  = 20
+// Height = 15
+// Usage: batt_full(x, y);
+#constant batt_full    $media_SetSector(0x0000, 0x0008); media_Image
+

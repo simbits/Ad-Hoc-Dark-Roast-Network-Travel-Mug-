@@ -1,0 +1,71 @@
+=====================================================
+SGC (Serial Graphics Controller) PLATFORM OUTPUT FILE
+=====================================================
+
+*******************************************************
+* This build option is not applicable to Goldelox SGC *
+* Must set 'New image format' for usage on Picaso SGC *
+* Data:                                               *
+*  0x59, 0x06, 0x00                                   *
+* 4DSL command:                                       *
+*  Control(6,0)                                       *
+*******************************************************
+
+---------------------------------------------------------------------------------------
+File "power_icons.gif" (power_icons)
+Sector Address 0x000000
+X = 0 Y = 0 Width = 20 Height = 18 Bits = 16 Frames = 6 Delay = 1
+
+Display Movie from Memory Card (Serial Command):
+Syntax:
+@, V, x, y, delay, SectorAdd(hi), SectorAdd(mid), SectorAdd(lo)
+
+Picaso Data:
+0x40, 0x56, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00
+
+4DSL command:
+NewVideo(0, 0, 1, 0x000000)
+
+---------------------------------------------------------------------------------------
+File "signal_icons.gif" (signal_icons)
+Sector Address 0x000009
+X = 0 Y = 0 Width = 20 Height = 18 Bits = 16 Frames = 5 Delay = 1
+
+Display Movie from Memory Card (Serial Command):
+Syntax:
+@, V, x, y, delay, SectorAdd(hi), SectorAdd(mid), SectorAdd(lo)
+
+Picaso Data:
+0x40, 0x56, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x09
+
+4DSL command:
+NewVideo(0, 0, 1, 0x000009)
+
+---------------------------------------------------------------------------------------
+File "transmission_icons.gif" (transmission_icons.gif)
+Sector Address 0x000011
+X = 0 Y = 0 Width = 20 Height = 18 Bits = 16 Frames = 11 Delay = 100
+
+Display Movie from Memory Card (Serial Command):
+Syntax:
+@, V, x, y, delay, SectorAdd(hi), SectorAdd(mid), SectorAdd(lo)
+
+Picaso Data:
+0x40, 0x56, 0x00, 0x00, 0x00, 0x00, 0x64, 0x00, 0x00, 0x11
+
+4DSL command:
+NewVideo(0, 0, 100, 0x000011)
+
+---------------------------------------------------------------------------------------
+File "darthVaderMug.jpg" (darthVaderMug.jpg)
+Sector Address 0x000021
+X = 0 Y = 0 Width = 128 Height = 128 Bits = 16
+
+Display Image from Memory Card (Serial Command):
+Syntax:
+@, I, x, y, SectorAdd(hi), SectorAdd(mid), SectorAdd(lo)
+Picaso Data:
+0x40, 0x49, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x21
+4DSL command:
+NewUSDImage(0, 0, 0x000021)
+
